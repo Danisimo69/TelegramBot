@@ -541,7 +541,6 @@ def do_strike(call):
         bot.edit_message_text(text=msg_text, chat_id=call.from_user.id,
                               message_id=call.message.message_id, reply_markup=markup)
 
-1111111111111111111111
 
 @bot.callback_query_handler(func=lambda call: call.data == "cont_off")
 def continue_offer(call):

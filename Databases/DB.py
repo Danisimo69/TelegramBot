@@ -27,7 +27,7 @@ class Admin(Base):
 class Card(Base):
     __tablename__ = 'cards'
     card_id = Column(BigInteger, primary_key=True)
-    photo_id = Column(BigInteger)
+    photo_id = Column(Text)
     player_name = Column(String(255))
     player_nickname = Column(String(255))
     team = Column(String(255))
@@ -38,6 +38,7 @@ class Card(Base):
 
 class CardsOfUser(Base):
     __tablename__ = 'cards_of_user'
+
     card_key = Column(BigInteger, primary_key=True)
     is_new = Column(Boolean)
 
@@ -64,7 +65,7 @@ class Operation(Base):
     operation_id = Column(Text, primary_key=True)
     operation_name = Column(Text)
     user_id = Column(BigInteger)
-    finished = Column(BigInteger, default=0)
+    finished = Column(Boolean, default=False)
 
 class Pack(Base):
     __tablename__ = 'packs'
@@ -118,7 +119,12 @@ async def async_main():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
+async def async_drop():
+
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
 
 if __name__ == '__main__':
 
+    asyncio.run(async_drop())
     asyncio.run(async_main())

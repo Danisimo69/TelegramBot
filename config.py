@@ -1,10 +1,9 @@
+import random
 
 from sqlalchemy import select, update, delete, and_
 import datetime
 
-import random
-
-from DB import *
+from Databases.DB import *
 
 class Card_:
     def __init__(self, card_id):
@@ -202,7 +201,7 @@ async def get_user_card_list(tele_id: int):
 
 async def get_lk_id_message(tele_id: int):
     async with async_session() as session:
-        result = await session.execute(select(User.lk_message_id).where(User.tele_id == tele_id))
+        result = await session.execute(select(User).where(User.tele_id == tele_id))
         user = result.scalar_one_or_none()
         return user.lk_message_id if user else None
 
@@ -232,11 +231,12 @@ async def place_player_in_db(player_info):
     async with async_session() as session:
         async with session.begin():
             new_card = Card(
+                card_id = random.randint(1000000000,1000000000000),
                 player_name=player_info[0],
                 player_nickname=player_info[1],
                 team=player_info[2],
-                rareness=get_rareness_by_str(player_info[3]),
-                points=player_info[4],
+                rareness=int(get_rareness_by_str(player_info[3])),
+                points=int(player_info[4]),
                 created_at=datetime.date.today()
             )
             session.add(new_card)
@@ -244,7 +244,7 @@ async def place_player_in_db(player_info):
         return new_card
 
 
-async def set_card_photo(card_id: int, photo_id: int):
+async def set_card_photo(card_id: int, photo_id: str):
     async with async_session() as session:
         async with session.begin():
             await session.execute(update(Card).where(Card.card_id == card_id).values(photo_id=photo_id))
@@ -280,23 +280,17 @@ async def edit_card_in_db(card_id: int, new_info):
         return 0
 
 
-async def get_random_card(card_num: int):
-    async with async_session() as session:
-        res_cards = []
-        for _ in range(card_num):
-            rareness = get_rareness_by_random(random.randint(0, 100))
-            card_result = await session.execute(select(Card).where(Card.rareness == rareness))
-            card_list = card_result.scalars().all()
-            index = random.randint(0, len(card_list) - 1) if card_list else 0
-            res_cards.append(card_list[index])
-        return res_cards
+
 
 
 async def add_cards_to_user(card_list, user_id: int):
     async with async_session() as session:
         async with session.begin():
             for card in card_list:
-                new_card_of_user = CardsOfUser(tele_id=user_id, card_id=card.card_id, is_new=True)
+                new_card_of_user = CardsOfUser(card_key= random.randint(1000000000,1000000000000),
+                                               tele_id=user_id,
+                                               card_id=card.card_id,
+                                               is_new=True)
                 session.add(new_card_of_user)
             await session.commit()
 
@@ -358,8 +352,13 @@ async def get_last_cards(tele_id: int):
 async def clear_user_transaction(tele_id: int):
     async with async_session() as session:
         async with session.begin():
-            await session.execute(delete(Operation).where(and_(Operation.user_id == tele_id, Operation.finished == False)))
-            await session.commit()
+            try:
+
+                await session.execute(delete(Operation).where(and_(Operation.user_id == tele_id, Operation.finished == False)))
+                await session.commit()
+                print(f"Очищены транзакции пользователя {tele_id}")
+            except:
+                print(f"Не получилось почистить транзакции пользователя {tele_id} (возможно их нет)")
 
 
 async def plus_user_transactions(tele_id: int):

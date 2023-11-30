@@ -3,9 +3,7 @@ import uuid
 from sqlalchemy import select, update, delete, or_, and_
 import datetime
 
-import random
-
-from DB import *
+from Databases.DB import *
 
 async def create_game(tele_id1: int):
     async with async_session() as session:

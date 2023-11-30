@@ -1,3 +1,5 @@
+import asyncio
+
 from yoomoney import Authorize
 from yoomoney import Client
 from yoomoney import Quickpay
@@ -42,8 +44,9 @@ def check_payment_token(payment_token):
         print("No card is linked to the account")
 
 
-def quick_pay(target, price, order_id):
-    quickpay = Quickpay(
+async def quick_pay(target, price, order_id):
+    quickpay = await asyncio.to_thread(
+     Quickpay,
         receiver=wallet_number,
         quickpay_form="shop",
         targets=target,
@@ -56,9 +59,10 @@ def quick_pay(target, price, order_id):
     return quickpay.redirected_url
 
 
-def check_payment(payment_label):
+async def check_payment(payment_label):
     client = Client(yoomoney_token)
-    history = client.operation_history(label=payment_label)
+    history = await asyncio.to_thread(client.operation_history,
+                                      label=payment_label)
     print(len(history.operations))
     if len(history.operations) > 0:
         return True

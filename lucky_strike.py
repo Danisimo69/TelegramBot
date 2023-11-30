@@ -1,11 +1,11 @@
+import traceback
 
-
-from sqlalchemy import select, update, delete
+from sqlalchemy import select, update
 import datetime
 
 import random
 
-from DB import *
+from Databases.DB import *
 
 def get_rareness_by_random(rnd_num):
     if rnd_num < 30:
@@ -86,8 +86,14 @@ async def get_random_card(card_num: int):
             rareness = get_rareness_by_random(random.randint(0, 100))
             card_result = await session.execute(select(Card).where(Card.rareness == rareness))
             card_list = card_result.scalars().all()
-            index = random.randint(0, len(card_list) - 1) if card_list else 0
-            res_cards.append(card_list[index])
+            print(card_list)
+            try:
+                index = random.randint(0, len(card_list) - 1) if len(card_list)!=0 else 0
+                print(index)
+                res_cards.append(card_list[index])
+            except:
+                traceback.print_exc()
+                return []
         return res_cards
 
 

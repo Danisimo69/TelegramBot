@@ -1,6 +1,6 @@
-from sqlalchemy import select, update, delete, or_, and_
+from sqlalchemy import select
 import datetime
-from DB import *
+from Databases.DB import *
 
 async def check_spam(tele_id: int):
     async with async_session() as session:

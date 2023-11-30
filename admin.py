@@ -1,6 +1,6 @@
 from sqlalchemy import select, update, delete
 
-from DB import *
+from Databases.DB import *
 
 
 async def place_promo(promo_text: str, usages: str):
@@ -33,7 +33,7 @@ async def insert_promo_card(promo_id: int, card_id: int):
             )
             await session.commit()
 
-async def check_promo(tele_id: int, input_str: str):
+async def check_promo_(tele_id: int, input_str: str):
     async with async_session() as session:
         async with session.begin():
             # Query the promo
@@ -132,12 +132,12 @@ async def get_user_transactions_info(tele_id: int, user_name: str):
         if not transactions:
             return f"Пока что пользователь - @{user_name} не совершал покупок"
         for idx, trans in enumerate(transactions, start=1):
-            pack_result = await session.execute(select(Pack).where(Pack.buy_id == trans.operation_id))
+            pack_result = await session.execute(select(Pack).where(Pack.buy_id == int(trans.operation_id)))
             pack = pack_result.scalar_one()
             trans_info += f"{idx}. {pack.name}\n"
         return trans_info
 
-async def delete_card(card_id: int):
+async def delete_card_(card_id: int):
     async with async_session() as session:
         async with session.begin():
             await session.execute(delete(Card).where(Card.card_id == card_id))
