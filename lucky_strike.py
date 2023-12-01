@@ -6,6 +6,53 @@ import datetime
 import random
 
 from Databases.DB import *
+from config import get_rareness_by_str
+
+
+def generate_item_rarity_random_card():
+    """
+    Generates a random item rarity based on predefined chances.
+    """
+    rarity_chances = {
+        'Обычная': 30,   # 30% chance
+        'Необычная': 25, # 25% chance
+        'Редкая': 20,    # 20% chance
+        'Эпическая': 15, # 15% chance
+        'Уникальная': 9, # 9% chance
+        'Легендарная': 1 # 1% chance
+    }
+
+    # Generate a random number between 1 and 100
+    random_number = random.randint(1, 100)
+
+    # Determine the rarity based on the random number
+    current_chance = 0
+    for rarity, chance in rarity_chances.items():
+        current_chance += chance
+        if random_number <= current_chance:
+            return rarity
+
+def generate_item_rarity_lucky_strike():
+    """
+    Generates a random item rarity based on predefined chances.
+    """
+    rarity_chances = {
+        'Обычная': 30,   # 30% chance
+        'Необычная': 25, # 25% chance
+        'Редкая': 25,    # 25% chance
+        'Эпическая': 19, # 19% chance
+        'Мифическая': 1, # 1% chance
+    }
+
+    # Generate a random number between 1 and 100
+    random_number = random.randint(1, 100)
+
+    # Determine the rarity based on the random number
+    current_chance = 0
+    for rarity, chance in rarity_chances.items():
+        current_chance += chance
+        if random_number <= current_chance:
+            return rarity
 
 def get_rareness_by_random(rnd_num):
     if rnd_num < 30:
@@ -79,14 +126,20 @@ async def update_user_strikes(tele_id: int, num: int):
                 await session.execute(update(LuckyStrike).where(and_(LuckyStrike.tele_id == tele_id, LuckyStrike.purchased_strikes > 0)).values(purchased_strikes=LuckyStrike.purchased_strikes - 1))
             await session.commit()
 
-async def get_random_card(card_num: int):
+async def get_random_card(card_num: int, type: str):
     async with async_session() as session:
         res_cards = []
         for _ in range(card_num):
-            rareness = get_rareness_by_random(random.randint(0, 100))
+            if type == "random_card":
+                rareness = generate_item_rarity_random_card()
+            elif type == "lucky_strike":
+                rareness = generate_item_rarity_lucky_strike()
+
+            rareness = get_rareness_by_str(rareness)
+
             card_result = await session.execute(select(Card).where(Card.rareness == rareness))
             card_list = card_result.scalars().all()
-            print(card_list)
+            # print(card_list)
             try:
                 index = random.randint(0, len(card_list) - 1) if len(card_list)!=0 else 0
                 print(index)

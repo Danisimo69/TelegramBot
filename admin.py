@@ -17,12 +17,28 @@ async def place_promo(promo_text: str, usages: str):
         promo = result.scalars().first()
         return promo.promo_id if promo else None
 
-async def select_all_cards():
+async def select_all_cards(sort_mode: str | None):
     async with async_session() as session:
-        result = await session.execute(select(Card))
-        # Fetch all results
-        cards = result.scalars().all()
-        return cards
+
+        if sort_mode == "Down":
+            result = await session.execute(select(Card))
+
+            cards = result.scalars().all()
+            cards = sorted(cards, key=lambda card: card.points, reverse=True)
+            return cards
+
+        elif sort_mode == "Up":
+            result = await session.execute(select(Card))
+            cards = result.scalars().all()
+            cards = sorted(cards, key=lambda card: card.points, reverse=False)
+            return cards
+
+        else:
+            result = await session.execute(select(Card))
+            cards = result.scalars().all()
+
+            return cards
+
 
 async def insert_promo_card(promo_id: int, card_id: int):
     async with async_session() as session:
@@ -117,7 +133,7 @@ async def get_user_info(tele_id: int, user_name: str):
                        f"Дата регистрации - {user.register_at}\n" \
                        f"Собранное количество карточек - {user.card_num}\n" \
                        f"Рейтинг собранных карточек - {user.card_rating}\n" \
-                       f"Рейтинг в игре пенальти - {user.mental_rating}\n\n" \
+                       f"Рейтинг в игре пенальти - {user.penalty_rating}\n\n" \
                        f"Забирал бесплатную карточку - {user.free_card}\n" \
                        f"Количество транзакций - {user.transactions}"
             return user_str

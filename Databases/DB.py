@@ -42,7 +42,7 @@ class CardsOfUser(Base):
     card_key = Column(BigInteger, primary_key=True)
     is_new = Column(Boolean)
 
-    tele_id = Column(BigInteger, ForeignKey('lucky_strike.tele_id'))
+    tele_id = Column(BigInteger, ForeignKey('users.tele_id'))
     card_id = Column(BigInteger, ForeignKey('cards.card_id'))
 
 
@@ -53,12 +53,15 @@ class CheckPromo(Base):
 
 class Offer(Base):
     __tablename__ = 'offers'
-    tele_id1 = Column(BigInteger, primary_key=True)
-    tele_id2 = Column(BigInteger, primary_key=True)
+    id = Column(BigInteger, primary_key=True)
+
+    tele_id1 = Column(BigInteger)
+    tele_id2 = Column(BigInteger)
     agree1 = Column(Boolean)
     agree2 = Column(Boolean)
 
-    card_id = Column(BigInteger, ForeignKey('cards.card_id'))
+    card_id1 = Column(BigInteger)
+    card_id2 = Column(BigInteger)
 
 class Operation(Base):
     __tablename__ = 'operations'
@@ -81,9 +84,10 @@ class Penalty(Base):
     user1_id = Column(BigInteger)
     user2_id = Column(BigInteger)
     turn = Column(BigInteger)
+    def_status = Column(Boolean, default=False)
     score1 = Column(Text)
     score2 = Column(Text)
-    last_kick = Column(Text)
+    last_kick = Column(DateTime)
     turn1 = Column(Text)
     turn2 = Column(Text)
 

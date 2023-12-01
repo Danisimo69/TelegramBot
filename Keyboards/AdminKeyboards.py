@@ -214,6 +214,10 @@ class InlineButtons(InlineConstructor):
         schema = []
         btns = []
 
+        if "sort_button" in tasks:
+            schema.append(1)
+            btns.append(buttons['sort_button'])
+
         if "num_0" in tasks:
 
             if "destroy_" in tasks:
@@ -254,6 +258,10 @@ class InlineButtons(InlineConstructor):
             btns.append(buttons['back_btn'])
             btns.append(buttons['num_btn'])
             btns.append(buttons['next_btn'])
+
+        schema.append(1)
+        btns.append({"text": "⏪ Назад",
+                     "callback_data": "admin"})
 
         return InlineButtons._create_kb(btns, schema)
 

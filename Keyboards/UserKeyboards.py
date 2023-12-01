@@ -194,7 +194,7 @@ class InlineButtons(InlineConstructor):
     def back_kb() -> aiogram.types.InlineKeyboardMarkup:
         schema = [1]
         btns = [{"text": "️⏪ Назад",
-                 "callback_data": "menu"}
+                 "callback_data": "back"}
                 ]
         return InlineButtons._create_kb(btns, schema)
 
@@ -212,29 +212,40 @@ class InlineButtons(InlineConstructor):
         schema = []
         btns = []
 
-        if "chan" in tasks:
+        if "sort_button" in tasks:
+            schema.append(1)
+            btns.append(add_data['sort_button'])
+
+        if "Выбрать для обмена" in tasks:
             schema.append(1)
             btns.append(
                 {"text": "️Выбрать для обмена",
                  "callback_data": add_data['Выбрать для обмена']})
 
+
         if "not_chan" in tasks:
-            schema.append(3)
+            schema.append(5)
             btns.append({"text": "️<<",
+                         "callback_data": add_data['<<<']})
+            btns.append({"text": "️<",
                          "callback_data": add_data['<<']})
             btns.append(
                 {"text": "️Просмотреть списком",
                  "callback_data": "coll"})
             btns.append(
-                {"text": "️>>",
+                {"text": "️>",
                  "callback_data": add_data['>>']}
+            )
+            btns.append(
+                {"text": "️>>",
+                 "callback_data": add_data['>>>']}
             )
 
         if "num1" in tasks:
 
             schema.append(1)
             btns.append(
-                {"text": add_data["️num1_text"],
+                {"text": add_data["num1_text"],
                  "callback_data": add_data["num1_data"]}
             )
 
@@ -255,14 +266,19 @@ class InlineButtons(InlineConstructor):
 
 
         if "num0" in tasks:
-            schema.append(2)
+
+            schema.append(3)
             btns.append(
-                {"text": add_data["️num1_text"],
+                {"text": add_data["num1_text"],
                  "callback_data": add_data["num1_data"]}
             )
             btns.append(
-                {"text": "️>>",
+                {"text": "️>",
                  "callback_data": add_data['>>']}
+            )
+            btns.append(
+                {"text": "️>>",
+                 "callback_data": add_data['>>>']}
             )
 
         if "num0_chan" in tasks:
@@ -281,11 +297,13 @@ class InlineButtons(InlineConstructor):
                          "callback_data": "new_lk"})
 
         if "num_len-1" in tasks:
-            schema.append(2)
+            schema.append(3)
             btns.append({"text": "️<<",
+                         "callback_data": add_data['<<<']})
+            btns.append({"text": "️<",
                          "callback_data": add_data['<<']})
             btns.append(
-                {"text": add_data["️num1_text"],
+                {"text": add_data["num1_text"],
                  "callback_data": add_data["num1_data"]}
             )
 
@@ -305,16 +323,22 @@ class InlineButtons(InlineConstructor):
                          "callback_data": "new_lk"})
 
         if "num_else" in tasks:
-            schema.append(3)
+            schema.append(5)
             btns.append({"text": "️<<",
+                         "callback_data": add_data['<<<']})
+            btns.append({"text": "️<",
                          "callback_data": add_data['<<']})
             btns.append(
-                {"text": add_data["️num1_text"],
+                {"text": add_data["num1_text"],
                  "callback_data": add_data["num1_data"]}
             )
             btns.append(
-                {"text": "️>>",
+                {"text": "️>",
                  "callback_data": add_data['>>']}
+            )
+            btns.append(
+                {"text": "️>>",
+                 "callback_data": add_data['>>>']}
             )
 
         if "num_else_chan" in tasks:

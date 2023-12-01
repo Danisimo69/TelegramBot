@@ -37,7 +37,7 @@ def get_rareness_by_num(num):
     return None
 
 
-def get_rareness_by_str(rare_string):
+def get_rareness_by_str(rare_string) -> int | None:
     rare_str = rare_string.lower().replace(" ", "")
     if rare_str == "обычная":
         return 0
@@ -51,6 +51,10 @@ def get_rareness_by_str(rare_string):
         return 4
     if rare_str == "редкая":
         return 5
+    if rare_str == "мифическая":
+        return 6
+    if rare_str == "эксклюзивная":
+        return 7
 
     return None
 
@@ -105,7 +109,7 @@ async def place_user_in_bd(tele_id: int):
             # print(users_result)
 
             if not users_result:
-                register_at = datetime.date.today()
+                register_at = datetime.datetime.now()
                 new_user = User(tele_id=tele_id, card_num=0, card_rating=0, penalty_rating=100, register_at=register_at)
                 session.add(new_user)
                 await session.commit()
@@ -114,7 +118,7 @@ async def place_user_in_bd(tele_id: int):
 async def clear_non_active_users():
     async with async_session() as session:
         async with session.begin():
-            current_date = datetime.date.today()
+            current_date = datetime.datetime.now()
             users_result = await session.execute(select(User).where(and_(User.card_num == 0, User.penalty_rating == 0)).order_by(User.register_at))
             users = users_result.scalars().all()
             for user in users:
@@ -162,16 +166,41 @@ async def insert_lk_message_id(lk_message_id: int, tele_id: int):
             await session.execute(update(User).where(User.tele_id == tele_id).values(lk_message_id=lk_message_id))
             await session.commit()
 
-async def search_user_cards(tele_id: int):
+async def search_user_cards(tele_id: int, sort_mode: str | None):
     async with async_session() as session:
-        cards_of_user_result = await session.execute(select(CardsOfUser).where(CardsOfUser.tele_id == tele_id))
-        cards_of_user = cards_of_user_result.scalars().all()
-        card_list = []
-        for card_user in cards_of_user:
-            card_result = await session.execute(select(Card).where(Card.card_id == card_user.card_id))
-            card = card_result.scalar_one_or_none()
-            if card:
-                card_list.append(card)
+
+        if sort_mode == "Down":
+            cards_of_user_result = await session.execute(select(CardsOfUser).where(CardsOfUser.tele_id == tele_id))
+            cards_of_user = cards_of_user_result.scalars().all()
+            card_list = []
+            for card_user in cards_of_user:
+                card_result = await session.execute(select(Card).where(Card.card_id == card_user.card_id))
+                card = card_result.scalar_one_or_none()
+                if card:
+                    card_list.append(card)
+            card_list = sorted(card_list, key=lambda card: card.points, reverse=True)
+
+        elif sort_mode == "Up":
+            cards_of_user_result = await session.execute(select(CardsOfUser).where(CardsOfUser.tele_id == tele_id))
+            cards_of_user = cards_of_user_result.scalars().all()
+            card_list = []
+            for card_user in cards_of_user:
+                card_result = await session.execute(select(Card).where(Card.card_id == card_user.card_id))
+                card = card_result.scalar_one_or_none()
+                if card:
+                    card_list.append(card)
+            card_list = sorted(card_list, key=lambda card: card.points, reverse=False)
+
+        else:
+
+            cards_of_user_result = await session.execute(select(CardsOfUser).where(CardsOfUser.tele_id == tele_id))
+            cards_of_user = cards_of_user_result.scalars().all()
+            card_list = []
+            for card_user in cards_of_user:
+                card_result = await session.execute(select(Card).where(Card.card_id == card_user.card_id))
+                card = card_result.scalar_one_or_none()
+                if card:
+                    card_list.append(card)
         return card_list
 
 async def get_user_card_list(tele_id: int):
@@ -237,7 +266,7 @@ async def place_player_in_db(player_info):
                 team=player_info[2],
                 rareness=int(get_rareness_by_str(player_info[3])),
                 points=int(player_info[4]),
-                created_at=datetime.date.today()
+                created_at=datetime.datetime.now()
             )
             session.add(new_card)
             await session.commit()
@@ -273,7 +302,7 @@ async def edit_card_in_db(card_id: int, new_info):
                     team=new_info[2],
                     rareness=get_rareness_by_str(new_info[3]),
                     points=new_info[4],
-                    updated_at=datetime.date.today()
+                    updated_at=datetime.datetime.now()
                 )
             )
             await session.commit()
@@ -390,7 +419,7 @@ async def push_free_card_date(tele_id: int):
 async def create_new_change_offer(user1_id: int, card_id: int):
     async with async_session() as session:
         async with session.begin():
-            new_offer = Offer(tele_id1=user1_id, agree1=False, agree2=False, card_id=card_id)
+            new_offer = Offer(id=random.randint(1000000000,1000000000000), tele_id1=user1_id, agree1=False, agree2=False, card_id1=card_id)
             session.add(new_offer)
             await session.commit()
 
@@ -460,12 +489,13 @@ async def cancel_trade(tele_id: int):
         async with session.begin():
             offer_result = await session.execute(select(Offer).where(Offer.tele_id1 == tele_id))
             offer = offer_result.scalar_one_or_none()
-            if offer is None:
-                offer_result = await session.execute(select(Offer).where(Offer.tele_id2 == tele_id))
-                offer = offer_result.scalar_one_or_none()
+
             if offer:
                 await session.delete(offer)
                 await session.commit()
+            else:
+                offer_result = await session.execute(select(Offer).where(Offer.tele_id2 == tele_id))
+                offer = offer_result.scalar_one_or_none()
 
 
         if offer:
