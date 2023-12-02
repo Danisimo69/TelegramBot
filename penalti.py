@@ -86,14 +86,21 @@ async def set_kick_time(tele_id: int):
 async def place_turn_in_db(tele_id: int, num: str):
     async with async_session() as session:
         async with session.begin():
-            res = await session.execute(select(Penalty).where(Penalty.turn == tele_id))
+            res = await session.execute(select(Penalty).where(or_(Penalty.user1_id == tele_id, Penalty.user2_id == tele_id)))
             res = res.scalar_one_or_none()
+
+            print(f"Пользователь: {tele_id}, Сторона: {num}")
 
             if num != "none":
                 if res.user1_id == tele_id:
-                    await session.execute(update(Penalty).where(Penalty.turn == tele_id).values(turn1=num))
+                    await session.execute(update(Penalty).where(or_(Penalty.user1_id == tele_id, Penalty.user2_id == tele_id)).values(turn1=num))
                 else:
-                    await session.execute(update(Penalty).where(Penalty.turn == tele_id).values(turn2=num))
+                    await session.execute(update(Penalty).where(or_(Penalty.user1_id == tele_id, Penalty.user2_id == tele_id)).values(turn2=num))
+
+            res = await session.execute(
+                select(Penalty).where(or_(Penalty.user1_id == tele_id, Penalty.user2_id == tele_id)))
+            res = res.scalar_one_or_none()
+            print(res.turn1, res.turn2)
 
             await session.commit()
 
@@ -118,9 +125,10 @@ async def is_scored(tele_id: int):
                         update(Penalty).where(Penalty.turn == game.turn).values(score2=game.score2+"1"))
                     keeper_id = game.user1_id
 
-                await session.execute(update(Penalty).where(Penalty.turn == game.turn).values(turn1='0',turn2='0'))
+                await session.execute(update(Penalty).where(Penalty.turn == game.turn).values(turn1='0',turn2='0', def_status=False))
                 await session.commit()
 
+                return [True, game.turn, keeper_id]
 
             else:
 
@@ -134,10 +142,10 @@ async def is_scored(tele_id: int):
                         update(Penalty).where(Penalty.turn == game.turn).values(score2=game.score2+"0"))
                     keeper_id = game.user1_id
 
-                await session.execute(update(Penalty).where(Penalty.turn == game.turn).values(turn1='0', turn2='0'))
+                await session.execute(update(Penalty).where(Penalty.turn == game.turn).values(turn1='0', turn2='0', def_status=False))
                 await session.commit()
 
-        return [True, game.turn, keeper_id]
+                return [False, game.turn, keeper_id]
 
 async def is_finished(tele_id: int):
     async with async_session() as session:
@@ -211,6 +219,8 @@ async def get_score_str(tele_id: int):
 
         if len(game.score1) > len(game.score2):
             second_str += "\U0000231B"
+        # elif len(game.score1) < len(game.score2):
+        #     first_str += "\U0000231B"
 
         if game.user1_id == game.turn:
             return [first_str, second_str]
@@ -225,6 +235,8 @@ async def get_second_user(tele_id: int):
 
 async def calc_result(tele_id: int):
     async with async_session() as session:
+        print(tele_id)
+
         game_result = await session.execute(select(Penalty).where(or_(Penalty.user1_id == tele_id, Penalty.user2_id == tele_id)))
         game = game_result.scalar_one_or_none()
 

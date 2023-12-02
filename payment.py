@@ -60,11 +60,13 @@ async def quick_pay(target, price, order_id):
 
 
 async def check_payment(payment_label):
-    client = Client(yoomoney_token)
-    history = await asyncio.to_thread(client.operation_history,
-                                      label=payment_label)
-    print(len(history.operations))
-    if len(history.operations) > 0:
-        return True
-    else:
-        return False
+    return True
+
+    # client = Client(yoomoney_token)
+    # history = await asyncio.to_thread(client.operation_history,
+    #                                   label=payment_label)
+    # print(len(history.operations))
+    # if len(history.operations) > 0:
+    #     return True
+    # else:
+    #     return False

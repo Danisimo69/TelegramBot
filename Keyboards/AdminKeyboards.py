@@ -86,7 +86,7 @@ class InlineButtons(InlineConstructor):
     def set_card_photo_kb(card_id) -> aiogram.types.InlineKeyboardMarkup:
         schema = [1,1]
         btns = [{"text": "Сохранить",
-                 "callback_data": "new_lk"},
+                 "callback_data": "back"},
                 {"text": "Редактировать",
                  "callback_data": str(card_id) + "_new"},
                 ]
@@ -177,11 +177,11 @@ class InlineButtons(InlineConstructor):
 
         if "not_section" in tasks:
             section = add_data['section']
-            schema.append(2)
+            schema.append(1)
             btns.append({"text": "Добавить",
                      "callback_data":"adm_add_" + section})
-            btns.append({"text": "Удалить",
-                     "callback_data": "adm_del_" + section})
+            # btns.append({"text": "Удалить",
+            #          "callback_data": "adm_del_" + section})
 
         if "card" in tasks:
             schema.append(1)

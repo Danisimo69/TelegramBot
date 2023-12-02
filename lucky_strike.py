@@ -6,53 +6,8 @@ import datetime
 import random
 
 from Databases.DB import *
-from config import get_rareness_by_str
+from config import get_rareness_by_str, generate_item_rarity
 
-
-def generate_item_rarity_random_card():
-    """
-    Generates a random item rarity based on predefined chances.
-    """
-    rarity_chances = {
-        'Обычная': 30,   # 30% chance
-        'Необычная': 25, # 25% chance
-        'Редкая': 20,    # 20% chance
-        'Эпическая': 15, # 15% chance
-        'Уникальная': 9, # 9% chance
-        'Легендарная': 1 # 1% chance
-    }
-
-    # Generate a random number between 1 and 100
-    random_number = random.randint(1, 100)
-
-    # Determine the rarity based on the random number
-    current_chance = 0
-    for rarity, chance in rarity_chances.items():
-        current_chance += chance
-        if random_number <= current_chance:
-            return rarity
-
-def generate_item_rarity_lucky_strike():
-    """
-    Generates a random item rarity based on predefined chances.
-    """
-    rarity_chances = {
-        'Обычная': 30,   # 30% chance
-        'Необычная': 25, # 25% chance
-        'Редкая': 25,    # 25% chance
-        'Эпическая': 19, # 19% chance
-        'Мифическая': 1, # 1% chance
-    }
-
-    # Generate a random number between 1 and 100
-    random_number = random.randint(1, 100)
-
-    # Determine the rarity based on the random number
-    current_chance = 0
-    for rarity, chance in rarity_chances.items():
-        current_chance += chance
-        if random_number <= current_chance:
-            return rarity
 
 def get_rareness_by_random(rnd_num):
     if rnd_num < 30:
@@ -131,9 +86,9 @@ async def get_random_card(card_num: int, type: str):
         res_cards = []
         for _ in range(card_num):
             if type == "random_card":
-                rareness = generate_item_rarity_random_card()
+                rareness = generate_item_rarity("random_card")
             elif type == "lucky_strike":
-                rareness = generate_item_rarity_lucky_strike()
+                rareness = generate_item_rarity("lucky_strike")
 
             rareness = get_rareness_by_str(rareness)
 

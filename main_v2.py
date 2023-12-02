@@ -150,7 +150,12 @@ async def return_to_lk(callback: types.CallbackQuery):
                 "🏆 Рейтинг собранных карточек: " + str(user.card_rating) + "\n\n" \
                 "⚽️ Рейтинг в игре Пенальти: " + str(user.penalty_rating)
 
-    await callback.message.edit_text(stat_str, reply_markup=InlineButtons.back_lk_kb(await is_admin(callback.from_user.id)))
+    try:
+        await callback.message.edit_text(stat_str, reply_markup=InlineButtons.back_lk_kb(await is_admin(callback.from_user.id)))
+    except:
+        await callback.message.delete()
+        await callback.message.answer(stat_str,
+                                         reply_markup=InlineButtons.back_lk_kb(await is_admin(callback.from_user.id)))
 
 
 @dp.callback_query(F.data == "rate")
@@ -308,11 +313,11 @@ async def continue_offer(callback: types.CallbackQuery):
     await bot.edit_message_text(chat_id=callback.from_user.id, message_id=msg_id,
                                   text="Введите юзернейм пользователя, с которым хотите поменяться")
 
-    bot.register_next_step_handler(callback.message, get_offer_to_user)
+    # bot.register_next_step_handler(callback.message, get_offer_to_user)
 
 @dp.callback_query(F.data == "getcar")
 async def get_cards(callback: types.CallbackQuery):
-    # bot.clear_step_handler_by_chat_id(callback.message.from_user.id)
+    # bot.clear_step_handler_by_chat_id(callback.from_user.id)
 
     product_str = "🃏 Если ты хочешь получить карточку, то ты попал куда надо!\n\n" \
                   "Раз в 24 часа ты можешь получать одну карточку бесплатно, " \
@@ -338,6 +343,139 @@ async def wait_promo(callback: types.CallbackQuery, state: FSMContext):
 
     await callback.message.edit_text("Введите промокод ниже", reply_markup=InlineButtons.back_to_getcar_kb())
     await state.set_state(UserState.check_promo.state)
+
+
+@dp.callback_query(F.data == "my_collection")
+async def my_collection(callback: types.CallbackQuery, state: FSMContext):
+
+    try:
+        await callback.message.edit_text("Выберите формат отображения коллекции", reply_markup=InlineButtons.collection_kb())
+    except:
+        await callback.message.delete()
+        await callback.message.answer("Выберите формат отображения коллекции",
+                                         reply_markup=InlineButtons.collection_kb())
+
+
+@dp.callback_query(F.data == "rare_mode")
+async def my_collection(callback: types.CallbackQuery, state: FSMContext):
+
+    cards = await search_user_cards(callback.from_user.id, "Up")
+
+    buttons = []
+
+    used = []
+    for card in cards:
+
+        if card.rareness == 0 and card.rareness not in used:
+            used.append(card.rareness)
+            buttons.append({"text": "Обычные",
+                            "callback_data": "rare_by_0:0"})
+
+        elif card.rareness == 5 and card.rareness not in used:
+            used.append(card.rareness)
+            buttons.append({"text": "Редкие",
+                            "callback_data": "rare_by_0:5"})
+
+        elif card.rareness == 1 and card.rareness not in used:
+            used.append(card.rareness)
+            buttons.append({"text": "Необычные",
+                            "callback_data": "rare_by_0:1"})
+
+        elif card.rareness == 2 and card.rareness not in used:
+            used.append(card.rareness)
+            buttons.append({"text": "Эпические",
+                            "callback_data": "rare_by_0:2"})
+
+        elif card.rareness == 3 and card.rareness not in used:
+            used.append(card.rareness)
+            buttons.append({"text": "Уникальные",
+                            "callback_data": "rare_by_0:3"})
+
+        elif card.rareness == 4 and card.rareness not in used:
+            used.append(card.rareness)
+            buttons.append({"text": "Легендарные",
+                            "callback_data": "rare_by_0:4"})
+
+        elif card.rareness == 6 and card.rareness not in used:
+            used.append(card.rareness)
+            buttons.append({"text": "Мифические",
+                            "callback_data": "rare_by_0:6"})
+
+        elif card.rareness == 7 and card.rareness not in used:
+            used.append(card.rareness)
+            buttons.append({"text": "Эксклюзивные",
+                            "callback_data": "rare_by_0:7"})
+
+
+
+    await callback.message.edit_text("Выберите редкость карт", reply_markup=InlineButtons.rare_mode_kb(buttons))
+
+@dp.callback_query(F.data[:8] == "rare_by_")
+async def rare_sort(callback: types.CallbackQuery, state: FSMContext):
+    rarity = int(callback.data.split(":")[-1])
+    card_list = await search_user_cards(callback.from_user.id, None, rarity)
+    card_num = len(card_list)
+
+    tasks = []
+    add_data = {}
+
+    num = int(callback.data.split(":")[0].replace("rare_by_", ""))
+
+    add_data['<<<'] = f"rare_by_0:{rarity}"
+    add_data['<<'] = "rare_by_" + str(num - 1)+ ":" + str(rarity)
+    add_data['>>'] = "rare_by_" + str(num + 1) + ":" + str(rarity)
+    add_data['>>>'] = f"rare_by_{len(card_list) - 1}"+ ":" + str(rarity)
+
+    add_data['num1_text'] = '(' + str(num + 1) + '/' + str(card_num) + ')'
+    add_data['num1_data'] = "..."
+
+
+    rareness = get_rareness_by_num(rarity)
+
+    caption_str = str(card_list[num].player_name) + " *" + str(card_list[num].player_nickname) \
+                  + "*\nРейтинг: " + "*" + str(card_list[num].points) \
+                  + "\nРедкость: " + "*" + rareness + "*" \
+                  + "*\nКоманда: " + "*" + str(card_list[num].team) + "*\n"
+
+    if len(card_list) == 1:
+        tasks.append("num1")
+        tasks.append("num1_not_chan")
+
+        # print(tasks, add_data)
+
+        if callback.message.photo == None:
+            await callback.message.delete()
+            msg = await bot.send_photo(callback.from_user.id, card_list[num].photo_id,
+                                       reply_markup=InlineButtons.show_card_by_rare_kb(tasks, add_data),
+                                       caption=caption_str, parse_mode='Markdown')
+            await insert_lk_message_id(msg.message_id, callback.from_user.id)
+            return
+
+    elif num == 0:
+
+        tasks.append("num0")
+        tasks.append("num0_not_chan")
+
+
+        if callback.message.photo == None:
+            await callback.message.delete()
+            msg = await bot.send_photo(callback.from_user.id, card_list[num].photo_id,
+                                       reply_markup=InlineButtons.show_card_by_rare_kb(tasks, add_data),
+                                       caption=caption_str, parse_mode='Markdown')
+            await insert_lk_message_id(msg.message_id, callback.from_user.id)
+            return
+
+    elif num == len(card_list) - 1:
+        tasks.append("num_len-1")
+        tasks.append("num_len-1_not_chan")
+
+    else:
+        tasks.append("num_else")
+        tasks.append("num_else_not_chan")
+
+    await callback.message.edit_media(caption=caption_str,
+                                      media=InputMediaPhoto(media=str(card_list[num].photo_id), caption=caption_str, parse_mode='Markdown'),
+                                      reply_markup=InlineButtons.show_card_by_rare_kb(tasks, add_data))
 
 
 @dp.callback_query(Has_One_Chan_Filter())
@@ -468,7 +606,7 @@ async def show_card_one_by_one(callback: types.CallbackQuery, state: FSMContext)
 
     caption_str = str(card_list[num].player_name) + " *" + str(card_list[num].player_nickname) \
         + "*\nРейтинг: " + "*" + str(card_list[num].points) \
-                  + "Редкость: " + "*" + rareness + "*" \
+                  + "\nРедкость: " + "*" + rareness + "*" \
         + "*\nКоманда: " + "*" + str(card_list[num].team) + "*\n"
 
 
@@ -520,10 +658,8 @@ async def show_card_one_by_one(callback: types.CallbackQuery, state: FSMContext)
             tasks.append("num_else_chan")
 
 
-    await callback.message.edit_media(caption=caption_str,
-                           media=InputMediaPhoto(media=str(card_list[num].photo_id)), reply_markup=InlineButtons.show_card_one_by_one_kb(tasks, add_data))
-    await callback.message.edit_caption(
-            caption=caption_str, reply_markup=InlineButtons.show_card_one_by_one_kb(tasks, add_data), parse_mode='Markdown')
+    await callback.message.edit_media(media=InputMediaPhoto(media=str(card_list[num].photo_id), caption=caption_str, parse_mode='Markdown'), reply_markup=InlineButtons.show_card_one_by_one_kb(tasks, add_data))
+
 
 
 @dp.callback_query(F.data[:6] == "offer_")
@@ -534,7 +670,7 @@ async def insert_card_to_offer(callback: types.CallbackQuery, state: FSMContext)
     bool_pl = await second_user_had_card(callback.from_user.id)
 
     if not await is_offer_defined(callback.from_user.id):
-        # bot.clear_step_handler_by_chat_id(callback.message.from_user.id)
+        # bot.clear_step_handler_by_chat_id(callback.from_user.id)
 
         await create_new_change_offer(callback.from_user.id, card_id)
 
@@ -544,8 +680,10 @@ async def insert_card_to_offer(callback: types.CallbackQuery, state: FSMContext)
 
     elif bool_pl != -1 and not bool_pl:
         await add_card_to_offer(callback.from_user.id, card_id)
+
+        await callback.message.delete()
         msg = await callback.message.answer("✅ Предложение обмена успешно отправлено, ожидайте")
-        await insert_lk_message_id(msg.message_id, callback.from_user.id)
+
         user_id = await get_first_user(callback.from_user.id)
         card = await get_trade_card(user_id, 1)
         card1 = await get_trade_card(user_id, 0)
@@ -594,12 +732,71 @@ async def penalti_game(callback: types.CallbackQuery):
                        reply_markup=InlineButtons.pen_start_kb())
     else:
 
-        if await check_def_status(callback.from_user.id):
-            await place_turn_in_db(callback.from_user.id, "none")
+        if (await check_def_status(callback.from_user.id)) and not (await kicker_status(callback.from_user.id)):
+            await bot.answer_callback_query(callback.id)
 
-        if not (await kicker_status(callback.from_user.id)):
-            print("asdasdww")
-            await callback.answer("Дождитесь пока оппонент совершит удар", show_alert=True)
+            num = callback.data.replace("pen_", "")
+
+            await place_turn_in_db(callback.from_user.id, num)
+            await change_kicker(callback.from_user.id)
+
+            res = await is_scored(callback.from_user.id)
+
+            scores = await get_score_str(callback.from_user.id)
+            # print(scores)
+
+            keeper_text = None
+
+#             print(res)
+
+            if res[0]:
+                kicker_text = f"⚽️ ГОЛ!!!\n@{await get_username_by_id(res[2])} прыгнул в другую сторону\n" \
+                              f"Результаты твоих ударов:\n{scores[0]}\n" \
+                              f"Результаты ударов противника:\n{scores[1]}"
+                keeper_text = f"❌ Ты пропустил гол\n@{await get_username_by_id(res[1])} бил в другой угол\n" \
+                              f"Результаты твоих ударов:\n{scores[1]}\n" \
+                              f"Результаты ударов противника:\n{scores[0]}"
+            elif res[1] != -1:
+                kicker_text = f"❌ Увы ты не забил\n@{await get_username_by_id(res[2])} угадал твой удар\n" \
+                              f"Результаты твоих ударов:\n{scores[0]}\n" \
+                              f"Результаты ударов противника:\n{scores[1]}"
+                keeper_text = f"🏆 Ты отбил удар\n@{await get_username_by_id(res[1])} бил в тот же угол\n" \
+                              f"Результаты твоих ударов:\n{scores[1]}\n" \
+                              f"Результаты ударов противника:\n{scores[0]}"
+
+            finish = await check_finish_game_penalti(callback, res, scores)
+
+            keeper_id = res[1]
+            kicker_id = res[2]
+
+            if not finish:
+                try:
+                    await bot.send_message(kicker_id, kicker_text)
+
+                except UnboundLocalError as err:
+
+                    print("Ссылка на переменную происходит раньше ее определения")
+                    print(err)
+
+                if keeper_text:
+                    await bot.send_message(keeper_id, keeper_text)
+                    # await change_kicker(res[2])
+                    await bot.send_photo(kicker_id, FSInputFile('images/keeper.png'),
+                                         caption="Выбери угол, в который хочешь прыгнуть",
+                                         reply_markup=InlineButtons.pen_else_kb())
+                    await bot.send_photo(keeper_id, FSInputFile('images/keeper.png'),
+                                         caption="Выбери угол, в который хочешь ударить",
+                                         reply_markup=InlineButtons.pen_else_kb())
+                    return
+
+                # print("change")
+                # await change_def_status(callback.from_user.id)
+
+
+
+        elif not (await kicker_status(callback.from_user.id)):
+#             print("asdasdww")
+            await callback.answer("Твой соперник еще не сделал удар.", show_alert=True)
 
         else:
             await bot.answer_callback_query(callback.id)
@@ -616,7 +813,7 @@ async def penalti_game(callback: types.CallbackQuery):
                                      reply_markup=None)
 
             scores = await get_score_str(callback.from_user.id)
-            print(scores)
+#             print(scores)
 
             keeper_text = None
 
@@ -639,7 +836,7 @@ async def penalti_game(callback: types.CallbackQuery):
             if not finish:
                 try:
                     await bot.send_message(res[1], kicker_text)
-                    return
+
                 except UnboundLocalError as err:
 
                     print("Ссылка на переменную происходит раньше ее определения")
@@ -656,7 +853,7 @@ async def penalti_game(callback: types.CallbackQuery):
                                    reply_markup=InlineButtons.pen_else_kb())
                     return
 
-                print("change")
+                # print("change")
                 await change_def_status(callback.from_user.id)
 
 
@@ -666,17 +863,17 @@ async def check_finish_game_penalti(callback: types.CallbackQuery, res: list, sc
     # обработка ошибок
     if finished == -1:
 
-        error_str = "Во время игры возникла ошибка, сеанс бы завершен"
-        msg = await bot.send_message(chat_id=callback.message.from_user.id,
+        error_str = "Во время игры возникла ошибка, сеанс был завершен"
+        msg = await bot.send_message(chat_id=callback.from_user.id,
                                text=error_str, reply_markup=InlineButtons.pen_canc_kb())
         await insert_lk_message_id(msg.message_id, msg.chat.id)
-        msg = await bot.send_message(chat_id=await get_second_user(callback.message.from_user.id), text=error_str, reply_markup=InlineButtons.pen_canc_kb())
+        msg = await bot.send_message(chat_id=await get_second_user(callback.from_user.id), text=error_str, reply_markup=InlineButtons.pen_canc_kb())
         await insert_lk_message_id(msg.message_id, msg.chat.id)
-        await delete_game(callback.message.from_user.id)
+        await delete_game(callback.from_user.id)
         return True
     # обработка успешного завершения игры
     if finished:
-        game_res = await finish_game(callback.message.from_user.id)
+        game_res = await finish_game(callback.from_user.id)
         if game_res[0] == 0:
 
             draw_str = f"Результаты ударов @{await get_username_by_id(res[1])}:\n{scores[0]}\n" \
@@ -699,7 +896,7 @@ async def check_finish_game_penalti(callback: types.CallbackQuery, res: list, sc
             msg = await bot.send_message(
                 game_res[2], text=fin_str, reply_markup=InlineButtons.pen_finished_1_kb())
             await insert_lk_message_id(msg.message_id, game_res[2])
-        await delete_game(callback.message.from_user.id)
+        await delete_game(callback.from_user.id)
         return True
     return False
 
@@ -763,8 +960,7 @@ async def get_buy_message(callback: types.CallbackQuery):
             await place_operation_in_db(
                 callback.from_user.id, operation_id, "Покупка дополнительных ударов")
 
-        await bot.edit_message_text(message_id=await get_lk_id_message(callback.from_user.id), chat_id=callback.from_user.id,
-                              text="Ваш заказ сформирован\nОплатите его по кнопке ниже",
+        await callback.message.edit_text("Ваш заказ сформирован\nОплатите его по кнопке ниже",
                               reply_markup=InlineButtons.get_buy_message_kb(redirect_uri))
 
 @dp.callback_query(F.data == "check_pay")
@@ -772,9 +968,11 @@ async def check_pay(callback: types.CallbackQuery):
     await callback.message.delete()
     free_card = await check_free_card(callback.from_user.id)
 
+    print([callback.data, free_card])
+
     if callback.data == "0" and free_card[0]:
 
-        random_card = await get_random_card(1)
+        random_card = await get_random_card(1, "random_card")
 
         await add_cards_to_user(random_card, callback.from_user.id)
         await push_free_card_date(callback.from_user.id)
@@ -787,8 +985,7 @@ async def check_pay(callback: types.CallbackQuery):
         # изменена одна строчка ниже
         ans_str = ans[0] + "ч " + ans[1] + "мин ⏱️"
 
-        await bot.edit_message_text(message_id=await get_lk_id_message(callback.from_user.id), chat_id=callback.from_user.id,
-                              text="Ты недавно получал свою бесплатную карточку! "
+        await callback.message.answer("Ты недавно получал свою бесплатную карточку! "
                                    "Следующую ты можешь получить через " + ans_str + ". "
                                    "Если не хочешь ждать - приобретай дополнительные карточки!",
                               reply_markup=InlineButtons.card_shop_kb())
@@ -809,7 +1006,7 @@ async def check_pay(callback: types.CallbackQuery):
             if int(product_id) == 4:
                 await update_user_strikes(callback.from_user.id, 1)
 
-                await callback.message.edit_text("Успешно ✅, купленные удары уже начисленны вам,"
+                await callback.message.answer("Успешно ✅, купленные удары уже начисленны вам,"
                                            "время проверить удачу!", reply_markup=InlineButtons.mini_games_kb())
                 return
 
@@ -817,27 +1014,29 @@ async def check_pay(callback: types.CallbackQuery):
 
             await plus_user_transactions(callback.from_user.id)
 
-            await bot.edit_message_text(message_id=await get_lk_id_message(callback.from_user.id), chat_id=callback.from_user.id,
-                                  text="Успешно ✅, получите ваш заказ", reply_markup=InlineButtons.get_cards_kb())
+            await callback.message.answer("Успешно ✅, получите ваш заказ", reply_markup=InlineButtons.get_cards_kb())
 
 
 # демонстрация новых карточек, которые получил пользователь
 # в процессе открытия набора
 @dp.callback_query(F.data == "get_new_cards")
-async def get_new_cards(callback: types.CallbackQuery):
+async def get_new_cards(callback: types.CallbackQuery, state: FSMContext):
     card_info = await get_last_cards(callback.from_user.id)
+    # print(card_info)
     if card_info[1] >= 1:
-        rare = get_rareness_by_num(card_info[0].rareness)
+        rare = get_rareness_by_num(card_info[0][0].rareness)
 
-        ans = str(card_info[0].player_name) + " aka " + str(card_info[0].player_nickname) \
-            + "\nРейтинг: " + str(card_info[0].points) \
-              + "Редкость: " + rare \
-              + "\nКоманда: " + str(card_info[0].team) + "\n"
+        ans = str(card_info[0][0].player_name) + " aka " + str(card_info[0][0].player_nickname) \
+            + "\nРейтинг: " + str(card_info[0][0].points) \
+              + "\nРедкость: " + rare \
+              + "\nКоманда: " + str(card_info[0][0].team) + "\n"
 
         if card_info[1] == 1:
             markup = InlineButtons.show_new_card_kb(True)
         else:
             markup = InlineButtons.show_new_card_kb(False)
+            await state.update_data(cards = card_info[0],
+                                    card_number=1)
 
         await bot.answer_callback_query(callback.id)
 
@@ -846,10 +1045,37 @@ async def get_new_cards(callback: types.CallbackQuery):
         except:
             pass
 
-        await bot.send_photo(callback.from_user.id,card_info[0].photo_id, caption=ans, reply_markup=markup)
+        await bot.send_photo(callback.from_user.id, card_info[0][0].photo_id, caption=ans, reply_markup=markup)
 
     else:
-        await callback.message.edit_text( text="У вас нет доступных к открытию карточек", reply_markup=InlineButtons.get_second_user_for_offer_kb())
+        await return_to_lk(callback)
+
+        # await callback.message.edit_text( text="У вас нет доступных к открытию карточек", reply_markup=InlineButtons.get_second_user_for_offer_kb())
+
+
+@dp.callback_query(F.data == "slide_bought_cards")
+async def slide_bought_cards(callback: types.CallbackQuery, state: FSMContext):
+
+    data = await state.get_data()
+
+    cards = data['cards']
+    card_number = data['card_number']
+
+    if card_number == len(cards)-1:
+        markup = InlineButtons.show_new_card_kb(True)
+        await state.clear()
+    else:
+        markup = InlineButtons.show_new_card_kb(False)
+        await state.update_data(card_number=card_number+1)
+
+    rare = get_rareness_by_num(cards[card_number].rareness)
+
+    ans = str(cards[card_number].player_name) + " aka " + str(cards[card_number].player_nickname) \
+          + "\nРейтинг: " + str(cards[card_number].points) \
+          + "\nРедкость: " + rare \
+          + "\nКоманда: " + str(cards[card_number].team) + "\n"
+
+    await callback.message.edit_media(media=InputMediaPhoto(media=str(cards[card_number].photo_id), caption=ans, parse_mode='Markdown'), reply_markup=markup)
 
 
 
@@ -998,39 +1224,6 @@ async def admin_execute(callback: types.CallbackQuery, state: FSMContext):
         await callback.message.edit_text("Тут можно выбрать карточку для удаления, "
                                    "чтобы открыть нажмите на кнопку",
                               reply_markup=AdminInlineKeyboard.adm_del_card_kb())
-
-
-@dp.callback_query(F.data == "new_lk")
-async def get_new_lk(callback: types.CallbackQuery, state: FSMContext):
-    await bot.answer_callback_query(callback.id)
-    await state.clear()
-
-    await callback.message.delete()
-    # добавлена новая проверка
-    if not await is_subscribed(callback.from_user.id):
-
-        await callback.message.answer("Чтобы начать необходимо подписаться на канал",
-                         reply_markup=InlineButtons.start_kb__not_sub())
-        return
-
-
-    await go_to_lk_message(callback.from_user.id)
-
-async def go_to_lk_message(CHAT_ID):
-
-
-    user = await search_user_in_db(CHAT_ID)
-    await calc_card_rating(CHAT_ID)
-    await cancel_trade(CHAT_ID)
-
-    # строчка со статистикой для игрока
-    stat_str = "Твои достижения:\n\n🃏 Собранное количество карточек: " + str(user.card_num) + "\n" \
-                                                                                        "🏆 Рейтинг собранных карточек: " + str(
-        user.card_rating) + "\n\n" \
-                   "⚽️ Рейтинг в игре Пенальти: " + str(user.penalty_rating)
-    msg = await bot.send_message(chat_id=CHAT_ID, text=stat_str, reply_markup=InlineButtons.back_lk_kb(await is_admin(CHAT_ID)))
-    await insert_lk_message_id(msg.message_id, CHAT_ID)
-
 
 @dp.callback_query(Show_All_Cards_Filter())
 async def show_all_cards(callback: types.CallbackQuery, state: FSMContext):
@@ -1265,7 +1458,8 @@ async def check_promocode(message: types.Message, state: FSMContext):
                              "Этому пользователю нельзя предложить обмен, попробуйте снова",
                              reply_markup=InlineButtons.get_second_user_for_offer_kb())
         else:
-            await insert_second_user(int(message.from_user.id), int(user_id))
+            print(int(message.from_user.id), int(user_id))
+            await insert_second_user_(int(message.from_user.id), int(user_id))
             card = await get_trade_card(message.chat.id, 0)
             msg = await bot.send_message(message.from_user.id, "✅ Предложение обмена успешно отправлено "
                                                          "пользователю - @" + username)
@@ -1417,7 +1611,7 @@ async def get_show_new_cards(message: types.Message):
     if card_info[1] >= 1:
         ans = str(card_info[0].player_name) + " " + str(card_info[0].player_nickname) \
               + "\nРейтинг: " + str(card_info[0].points) \
-              + "Редкость: " + get_rareness_by_num(card_info[0].rareness) \
+              + "\nРедкость: " + get_rareness_by_num(card_info[0].rareness) \
               + "\nКоманда: " + str(card_info[0].team) + "\n"
 
 
@@ -1439,6 +1633,7 @@ async def waiting_user_confirm(user1_id,user2_id, msg):
     else:
         await msg.delete()
         await bot.send_message(chat_id=user1_id, text="К сожалению, ваш оппонент не принял игру за минуту", reply_markup=InlineButtons.back_kb())
+        await delete_game(user1_id)
 
 
 async def search_user_by_username(user_name, tele_id):
