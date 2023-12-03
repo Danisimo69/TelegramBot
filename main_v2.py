@@ -1,18 +1,8 @@
-import asyncio
-import datetime
-import glob
 import logging
-import os
-import random
-import string
-import uuid
 from aiogram import Bot, Dispatcher, types
-from aiogram.utils.deep_linking import create_start_link, decode_payload
 from aiogram.filters.command import Command
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import StatesGroup, State
-from aiogram.types import FSInputFile, InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ContentType, \
-    InputFile, InputMediaPhoto
+from aiogram.types import FSInputFile, InputMediaPhoto
 from aiogram import F
 
 
@@ -21,16 +11,16 @@ from Filters.UserFilters import Has_One_Chan_Filter, Get_Buy_Message_Filter, Red
     Show_All_Cards_Filter
 from Keyboards.UserKeyboards import InlineButtons
 from Keyboards.AdminKeyboards import InlineButtons as AdminInlineKeyboard
-from admin import get_user_transactions_info, select_all_promos, select_all_cards, delete_card_, delete_promo, \
+from Modules.admin import get_user_transactions_info, select_all_promos, select_all_cards, delete_card_, delete_promo, \
     insert_promo_card, get_user_info, minus_promo_usages, add_card_to_user_by_card_id, place_promo, \
     check_promo_
 
-from config import *
-from lucky_strike import *
+from Modules.config import *
+from Modules.lucky_strike import *
 from main_config import token, CHANNEL_ID
-from payment import quick_pay, check_payment
-from penalti import *
-from timers import *
+from Modules.payment import quick_pay, check_payment
+from Modules.penalti import *
+from Modules.timers import *
 
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=token)
@@ -1326,6 +1316,7 @@ async def show_all_cards(callback: types.CallbackQuery, state: FSMContext):
 
         buttons['choose_btn'] = {"text": "Выбрать в промо",
                                  "callback_data": "promo_" + str(promo_id) + "_" + str(card_list[num].card_id)}
+        print(buttons['choose_btn'])
         buttons['back_btn'] = {"text": "<<",
                                "callback_data": "choose_" + str(promo_id) + "_" + str(num - 1)}
         buttons['next_btn'] = {"text": ">>",
@@ -1405,6 +1396,8 @@ async def add_card_to_promo(callback: types.CallbackQuery):
         info = callback.data.split("_")
         card_id = info[2]
         await insert_promo_card(int(promo_id), int(card_id))
+
+    await callback.message.delete()
     msg = await bot.send_message(callback.from_user.id, "Промокод был успешно добавлен! Время его проверить",
                            reply_markup=AdminInlineKeyboard.add_card_to_promo_kb())
     await insert_lk_message_id(msg.message_id, callback.from_user.id)
@@ -1428,7 +1421,7 @@ async def check_promocode(message: types.Message, state: FSMContext):
             await get_show_new_cards(message)
             # конец изменений
         else:
-            msg = await bot.send_message(message.chat.id, "Увы, но такого промокода не существует, либо он больше недействительный😔",
+            msg = await bot.send_message(message.chat.id, "Увы, но такого промокода не существует, либо он больше недействительный 😔",
                                    reply_markup=AdminInlineKeyboard.check_promo_kb())
             await insert_lk_message_id(msg.message_id, message.chat.id)
 
@@ -1441,7 +1434,9 @@ async def check_promocode(message: types.Message, state: FSMContext):
             usages = "INF"
 
         promo_id = await place_promo(promo, usages)
+        print(promo_id)
 
+        await message.delete()
         await bot.send_message(message.chat.id, "Теперь нажмите кнопку выбрать карточку, "
                                           "чтобы она выдавалась при вводе промокода", reply_markup=AdminInlineKeyboard.get_promo_text_kb(promo_id))
 
@@ -1608,14 +1603,15 @@ async def check_promocode(message: types.Message, state: FSMContext):
 
 async def get_show_new_cards(message: types.Message):
     card_info = await get_last_cards(message.chat.id)
+
     if card_info[1] >= 1:
-        ans = str(card_info[0].player_name) + " " + str(card_info[0].player_nickname) \
-              + "\nРейтинг: " + str(card_info[0].points) \
-              + "\nРедкость: " + get_rareness_by_num(card_info[0].rareness) \
-              + "\nКоманда: " + str(card_info[0].team) + "\n"
+        ans = str(card_info[0][0].player_name) + " " + str(card_info[0][0].player_nickname) \
+              + "\nРейтинг: " + str(card_info[0][0].points) \
+              + "\nРедкость: " + get_rareness_by_num(card_info[0][0].rareness) \
+              + "\nКоманда: " + str(card_info[0][0].team) + "\n"
 
 
-        await bot.send_photo(message.chat.id, card_info[0].photo_id, caption=ans, reply_markup=InlineButtons.get_show_new_cards_kb())
+        await bot.send_photo(message.chat.id, card_info[0][0].photo_id, caption=ans, reply_markup=InlineButtons.show_new_card_kb())
 
 async def waiting_user_confirm(user1_id,user2_id, msg):
 

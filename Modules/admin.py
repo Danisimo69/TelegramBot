@@ -1,3 +1,5 @@
+import random
+
 from sqlalchemy import select, update, delete
 
 from Databases.DB import *
@@ -8,7 +10,7 @@ async def place_promo(promo_text: str, usages: str):
 
         async with session.begin():
             # Create a new Promo instance
-            new_promo = Promo(promo=promo_text, usages=usages)
+            new_promo = Promo(promo_id=random.randint(10000000,10000000000), promo=promo_text, usages=usages)
             session.add(new_promo)
             await session.commit()
 
@@ -43,11 +45,23 @@ async def select_all_cards(sort_mode: str | None):
 async def insert_promo_card(promo_id: int, card_id: int):
     async with async_session() as session:
         async with session.begin():
-            # Update the promo with the new card_id
-            await session.execute(
-                update(Promo).where(Promo.promo_id == promo_id).values(card_id=card_id)
-            )
-            await session.commit()
+
+            if card_id == 0:
+
+                card_result = await session.execute(select(Card))
+                cards = card_result.scalars().all()
+
+                await session.execute(
+                    update(Promo).where(Promo.promo_id == promo_id).values(card_id=random.choice(cards).card_id)
+                )
+                await session.commit()
+
+            else:
+
+                await session.execute(
+                    update(Promo).where(Promo.promo_id == promo_id).values(card_id=card_id)
+                )
+                await session.commit()
 
 async def check_promo_(tele_id: int, input_str: str):
     async with async_session() as session:
@@ -60,7 +74,6 @@ async def check_promo_(tele_id: int, input_str: str):
             if res is None or (res.usages != "INF" and int(res.usages) <= 0):
                 return [False, -1]
             else:
-                # Check if the promo has already been used by this tele_id
                 promo_check_result = await session.execute(
                     select(CheckPromo).where(
                         CheckPromo.promo == input_str,

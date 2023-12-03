@@ -562,7 +562,7 @@ class InlineButtons(InlineConstructor):
         return InlineButtons._create_kb(btns, schema)
 
     @staticmethod
-    def show_new_card_kb(card_info=True) -> aiogram.types.InlineKeyboardMarkup:
+    def show_new_card_kb(card_info: bool = True) -> aiogram.types.InlineKeyboardMarkup:
         if card_info:
             schema = [1]
             btns = [

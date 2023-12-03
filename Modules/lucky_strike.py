@@ -6,7 +6,7 @@ import datetime
 import random
 
 from Databases.DB import *
-from config import get_rareness_by_str, generate_item_rarity
+from Modules.config import get_rareness_by_str, generate_item_rarity
 
 
 def get_rareness_by_random(rnd_num):
