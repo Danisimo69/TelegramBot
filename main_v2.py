@@ -152,7 +152,7 @@ async def return_to_lk(callback: types.CallbackQuery):
 async def get_player_rating(callback: types.CallbackQuery):
     await calc_card_rating(callback.from_user.id)
 
-    await callback.message.edit_text("В этом разделе ты можешь посмотреть 🏆Топ 10 игроков по категориям!",
+    await callback.message.edit_text("В этом разделе ты можешь посмотреть 🏆 Топ 10 игроков по категориям!",
                           reply_markup=InlineButtons.rate_kb())
 
 
