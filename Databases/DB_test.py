@@ -1,3 +1,6 @@
+import sys
+sys.path.append('/Bot/TelegramBot/')
+
 from Databases.DB import *
 
 

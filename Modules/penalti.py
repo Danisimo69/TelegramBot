@@ -291,7 +291,7 @@ async def finish_game(tele_id: int):
     if result[0] == 0:
         return [0, result[1], result[2]]
     else:
-        winner_id, loser_id = result[1], result[2]
+        winner_id, loser_id = result[2], result[1]
 
         async with async_session() as session:
             async with session.begin():

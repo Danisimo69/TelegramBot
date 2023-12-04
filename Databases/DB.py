@@ -5,6 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncAttrs, create_async_engine, async_sessio
 from sqlalchemy.orm import sessionmaker, relationship, DeclarativeBase
 from sqlalchemy.ext.declarative import declarative_base
 
+import sys
+sys.path.append('/Bot/TelegramBot/')
+
 from main_config import DB_link
 
 # Настройка базы данных
