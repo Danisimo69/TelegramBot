@@ -2,6 +2,7 @@ import datetime
 import json
 import random
 import sys
+import ast
 sys.path.append('/root/Offside-bot/TelegramBot')
 
 from Databases.DB import *
@@ -9,13 +10,13 @@ from Databases.DB import *
 
 async def main():
     async with async_session() as session:
-        with session.begin():
+        async with session.begin():
 
             # users
             data = []
             with open("Tables/users.txt", "r") as file:
                 for i in file:
-                    data.append(json.loads(i.rstrip()))
+                    data.append(ast.literal_eval(i.rstrip()))
 
             for i in file:
                 date_string1 = i[4]
@@ -43,7 +44,7 @@ async def main():
             data = []
             with open("Tables/lucky_strike.txt", "r") as file:
                 for i in file:
-                    data.append(json.loads(i.rstrip()))
+                    data.append(ast.literal_eval(i.rstrip()))
 
             for i in file:
                 date_string = i[1]
@@ -63,7 +64,7 @@ async def main():
             data = []
             with open("Tables/cards.txt", "r") as file:
                 for i in file:
-                    data.append(json.loads(i.rstrip()))
+                    data.append(ast.literal_eval(i.rstrip()))
 
             for i in file:
                 date_string1 = i[7]
@@ -92,7 +93,7 @@ async def main():
             data = []
             with open("Tables/cards_of_user.txt", "r") as file:
                 for i in file:
-                    data.append(json.loads(i.rstrip()))
+                    data.append(ast.literal_eval(i.rstrip()))
 
             for i in file:
 
@@ -108,7 +109,7 @@ async def main():
             data = []
             with open("Tables/check_promo.txt", "r") as file:
                 for i in file:
-                    data.append(json.loads(i.rstrip()))
+                    data.append(ast.literal_eval(i.rstrip()))
 
             for i in file:
                 ls = CheckPromo(id=random.randint(1000000000,1000000000000),
@@ -122,7 +123,7 @@ async def main():
             data = []
             with open("Tables/offers.txt", "r") as file:
                 for i in file:
-                    data.append(json.loads(i.rstrip()))
+                    data.append(ast.literal_eval(i.rstrip()))
 
             for i in file:
                 ls = Offer(id=random.randint(1000000000, 1000000000000),
@@ -140,7 +141,7 @@ async def main():
             data = []
             with open("Tables/operations.txt", "r") as file:
                 for i in file:
-                    data.append(json.loads(i.rstrip()))
+                    data.append(ast.literal_eval(i.rstrip()))
 
             for i in file:
                 ls = Operation(operation_id=i[0],
@@ -155,7 +156,7 @@ async def main():
             data = []
             with open("Tables/packs.txt", "r") as file:
                 for i in file:
-                    data.append(json.loads(i.rstrip()))
+                    data.append(ast.literal_eval(i.rstrip()))
 
             for i in file:
                 ls = Pack(buy_id=int(i[0]),
@@ -169,7 +170,7 @@ async def main():
                     # data = []
                     # with open("Tables/penalti.txt", "r") as file:
                     #     for i in file:
-                    #         data.append(json.loads(i.rstrip()))
+                    #         data.append(ast.literal_eval(i.rstrip()))
                     #
                     # for i in file:
                     #     date_string = i[1]
@@ -196,7 +197,7 @@ async def main():
             data = []
             with open("Tables/promos.txt", "r") as file:
                 for i in file:
-                    data.append(json.loads(i.rstrip()))
+                    data.append(ast.literal_eval(i.rstrip()))
 
             for i in file:
                 ls = Promo(promo_id=int(i[0]),
@@ -211,7 +212,7 @@ async def main():
             data = []
             with open("Tables/spam.txt", "r") as file:
                 for i in file:
-                    data.append(json.loads(i.rstrip()))
+                    data.append(ast.literal_eval(i.rstrip()))
 
             for i in file:
                 date_string = i[2]
@@ -231,7 +232,7 @@ async def main():
             data = []
             with open("Tables/admins.txt", "r") as file:
                 for i in file:
-                    data.append(json.loads(i.rstrip()))
+                    data.append(ast.literal_eval(i.rstrip()))
 
             for i in file:
                 ls = Admin(tele_id=int(i[0]))
