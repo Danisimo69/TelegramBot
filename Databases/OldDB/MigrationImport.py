@@ -9,51 +9,51 @@ from Databases.DB import *
 
 
 async def main():
-    async with async_session() as session:
-        async with session.begin():
-
-            # users
-            data = []
-            with open("Tables/users.txt", "r") as file:
-                for i in file:
-                    data.append(ast.literal_eval(i.rstrip()))
-
-            for i in data:
-                date_string1 = i[4]
-                date_string2 = i[7]
-
-                date_format = "%Y-%m-%d %H:%M:%S.%f"
-
-                try:
-                    date_obj1 = datetime.datetime.strptime(date_string1, date_format)
-                except:
-                    try:
-                        date_obj1 = datetime.datetime.strptime(date_string1, "%Y-%m-%d")
-                    except:
-                        date_obj1=None
-
-                try:
-                    date_obj2 = datetime.datetime.strptime(date_string2, date_format)
-                except:
-                    try:
-                        date_obj2 = datetime.datetime.strptime(date_string2, "%Y-%m-%d")
-                    except:
-                        date_obj2=None
-
-                ls = User(tele_id=int(i[0]) if i[0] != None else None,
-                          card_num=int(i[1]) if i[1] != None else None,
-                          card_rating=int(i[2]) if i[2] != None else None,
-                          penalty_rating=int(i[3]),
-                          register_at=date_obj1,
-                          lk_message_id=int(i[5]) if i[5] != None else None,
-                          transactions=int(i[6]),
-                          free_card=date_obj2,
-                          get_messages=int(i[8])
-                          )
-
-                session.add(ls)
-
-            await session.commit()
+    # async with async_session() as session:
+    #     async with session.begin():
+    #
+    #         # users
+    #         data = []
+    #         with open("Tables/users.txt", "r") as file:
+    #             for i in file:
+    #                 data.append(ast.literal_eval(i.rstrip()))
+    #
+    #         for i in data:
+    #             date_string1 = i[4]
+    #             date_string2 = i[7]
+    #
+    #             date_format = "%Y-%m-%d %H:%M:%S.%f"
+    #
+    #             try:
+    #                 date_obj1 = datetime.datetime.strptime(date_string1, date_format)
+    #             except:
+    #                 try:
+    #                     date_obj1 = datetime.datetime.strptime(date_string1, "%Y-%m-%d")
+    #                 except:
+    #                     date_obj1=None
+    #
+    #             try:
+    #                 date_obj2 = datetime.datetime.strptime(date_string2, date_format)
+    #             except:
+    #                 try:
+    #                     date_obj2 = datetime.datetime.strptime(date_string2, "%Y-%m-%d")
+    #                 except:
+    #                     date_obj2=None
+    #
+    #             ls = User(tele_id=int(i[0]) if i[0] != None else None,
+    #                       card_num=int(i[1]) if i[1] != None else None,
+    #                       card_rating=int(i[2]) if i[2] != None else None,
+    #                       penalty_rating=int(i[3]),
+    #                       register_at=date_obj1,
+    #                       lk_message_id=int(i[5]) if i[5] != None else None,
+    #                       transactions=int(i[6]),
+    #                       free_card=date_obj2,
+    #                       get_messages=int(i[8])
+    #                       )
+    #
+    #             session.add(ls)
+    #
+    #         await session.commit()
 
 
 
@@ -187,7 +187,11 @@ async def main():
                 for i in file:
                     data.append(ast.literal_eval(i.rstrip()))
 
+            used = []
             for i in data:
+                if i[0] in used:
+                    continue
+                used.append(i[0])
                 ls = Operation(operation_id=i[0],
                            operation_name=i[1],
                            user_id=int(i[2]) if i[2] != None else None,
