@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/Bot/TelegramBot/')
+sys.path.append('/root/Offside-bot/TelegramBot')
 
 from Databases.DB import *
 

@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker, relationship, DeclarativeBase
 from sqlalchemy.ext.declarative import declarative_base
 
 import sys
-sys.path.append('/Bot/TelegramBot/')
+sys.path.append('/root/Offside-bot/TelegramBot')
 
 from main_config import DB_link
 
