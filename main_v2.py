@@ -1646,7 +1646,7 @@ async def check_promocode(message: types.Message, state: FSMContext):
 
         username = message.text.replace("@", "")
 
-        user_id = await search_user_by_username(username, message.from_user.id)
+        user_id = await get_user_by_username(username)
 
         if user_id == -1:
             await bot.send_message(message.from_user.id,
@@ -1669,7 +1669,7 @@ async def check_promocode(message: types.Message, state: FSMContext):
     if state_ == UserState.get_username_for_pen.state:
 
         # изменена одна строчка кода ниже
-        tele_id2 = await search_user_by_username(message.text, message.from_user.id)
+        tele_id2 = await get_user_by_username(message.text.replace("@", ""))
         if tele_id2 == -1:
             msg = await bot.send_message(message.from_user.id,
                                          "Этому пользователю нельзя предложить игру в Пенальти ☹️\n"
@@ -1710,7 +1710,7 @@ async def check_promocode(message: types.Message, state: FSMContext):
 
     if state_ == UserState.get_username_for_admin.state:
 
-        user_id = await search_user_by_username(message.text, -1)
+        user_id = await get_user_by_username(message.text)
         if user_id == -1:
             await bot.send_message(message.from_user.id, "Пользователь с таким именем не был найден. "
                                                          "Проверьте корректность ввода данных",
