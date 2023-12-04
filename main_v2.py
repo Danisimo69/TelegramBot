@@ -68,7 +68,6 @@ async def start_message(message: types.Message, state: FSMContext):
                                         "Все правила игры вы можете узнать в разделе: \n*«ℹ️ Информация»*\n\n"
                                         "Если ты готов к игре, то нажимай\n*«🎮 Начать игру»*",
                                         reply_markup=InlineButtons.start_kb__sub(), parse_mode='Markdown')
-        await insert_lk_message_id(sent_msg.message_id, message.from_user.id)
 
 
 @dp.callback_query(F.data == "menu")
@@ -231,7 +230,7 @@ async def get_collection(callback: types.CallbackQuery):
         await callback.message.delete()
         msg = await callback.message.answer(ans_str, reply_markup=InlineButtons.take_card_kb(have_cards=True))
 
-        await insert_lk_message_id(msg.message_id, callback.from_user.id)
+
 
 
 # вызов мини-игр
@@ -262,7 +261,7 @@ async def lucky_strike(callback: types.CallbackQuery):
                                            "Если забиваешь - получаешь одну рандомную карточку. Если не забиваешь - "
                                            "пробуешь еще через время",
                                            reply_markup=InlineButtons.lucky_strike_kb())
-    await insert_lk_message_id(msg.message_id, callback.from_user.id)
+
 
 
 # функция игры удачный удар
@@ -302,7 +301,7 @@ async def do_strike(callback: types.CallbackQuery):
 
         msg = await callback.message.answer(msg_text, reply_markup=InlineButtons.do_strike_kb(tasks))
 
-        await insert_lk_message_id(msg.message_id, callback.from_user.id)
+
     elif not purchased[0]:
 
         msg_text = f"Ты недавно пробовал проверить свою удачу!\n" \
@@ -462,7 +461,7 @@ async def rare_sort(callback: types.CallbackQuery, state: FSMContext):
             msg = await bot.send_photo(callback.from_user.id, card_list[num].photo_id,
                                        reply_markup=InlineButtons.show_card_by_rare_kb(tasks, add_data),
                                        caption=caption_str, parse_mode='Markdown')
-            await insert_lk_message_id(msg.message_id, callback.from_user.id)
+
             return
 
     elif num == 0:
@@ -475,7 +474,7 @@ async def rare_sort(callback: types.CallbackQuery, state: FSMContext):
             msg = await bot.send_photo(callback.from_user.id, card_list[num].photo_id,
                                        reply_markup=InlineButtons.show_card_by_rare_kb(tasks, add_data),
                                        caption=caption_str, parse_mode='Markdown')
-            await insert_lk_message_id(msg.message_id, callback.from_user.id)
+
             return
 
     elif num == len(card_list) - 1:
@@ -532,7 +531,7 @@ async def rare_sort_1(callback: types.CallbackQuery, state: FSMContext):
             msg = await bot.send_photo(callback.from_user.id, card_list[num].photo_id,
                                        reply_markup=InlineButtons.show_card_by_rare_kb(tasks, add_data),
                                        caption=caption_str, parse_mode='Markdown')
-            await insert_lk_message_id(msg.message_id, callback.from_user.id)
+
             return
 
     elif num == 0:
@@ -545,7 +544,7 @@ async def rare_sort_1(callback: types.CallbackQuery, state: FSMContext):
             msg = await bot.send_photo(callback.from_user.id, card_list[num].photo_id,
                                        reply_markup=InlineButtons.show_card_by_rare_kb(tasks, add_data),
                                        caption=caption_str, parse_mode='Markdown')
-            await insert_lk_message_id(msg.message_id, callback.from_user.id)
+
             return
 
     elif num == len(card_list) - 1:
@@ -708,7 +707,7 @@ async def show_card_one_by_one(callback: types.CallbackQuery, state: FSMContext)
             msg = await bot.send_photo(callback.from_user.id, card_list[num].photo_id,
                                        reply_markup=InlineButtons.show_card_one_by_one_kb(tasks, add_data),
                                        caption=caption_str, parse_mode='Markdown')
-            await insert_lk_message_id(msg.message_id, callback.from_user.id)
+
             return
 
     elif num == 0:
@@ -724,7 +723,7 @@ async def show_card_one_by_one(callback: types.CallbackQuery, state: FSMContext)
             msg = await bot.send_photo(callback.from_user.id, card_list[num].photo_id,
                                        reply_markup=InlineButtons.show_card_one_by_one_kb(tasks, add_data),
                                        caption=caption_str, parse_mode='Markdown')
-            await insert_lk_message_id(msg.message_id, callback.from_user.id)
+
             return
 
     elif num == len(card_list) - 1:
@@ -787,12 +786,11 @@ async def penalti_game(callback: types.CallbackQuery, state: FSMContext):
         res = await delete_game(callback.from_user.id)
         msg = await callback.message.edit_text("❌ Вы отклонили игру в пенальти",
                                                reply_markup=InlineButtons.pen_canc_kb())
-        await insert_lk_message_id(msg.message_id, callback.from_user.id)
+
         msg = await bot.send_message(chat_id=res[0],
                                      text=f"❌ @{await get_username_by_id(res[1])} отклонил предложение игры",
                                      reply_markup=InlineButtons.pen_canc_kb())
 
-        await insert_lk_message_id(msg.message_id, res[0])
         return
 
     if callback.data == "pen_start":
@@ -969,10 +967,8 @@ async def check_finish_game_penalti(callback: types.CallbackQuery, res: list, sc
         error_str = "Во время игры возникла ошибка, сеанс был завершен"
         msg = await bot.send_message(chat_id=callback.from_user.id,
                                      text=error_str, reply_markup=InlineButtons.pen_canc_kb())
-        await insert_lk_message_id(msg.message_id, msg.chat.id)
         msg = await bot.send_message(chat_id=await get_second_user(callback.from_user.id), text=error_str,
                                      reply_markup=InlineButtons.pen_canc_kb())
-        await insert_lk_message_id(msg.message_id, msg.chat.id)
         await delete_game(callback.from_user.id)
         return True
     # обработка успешного завершения игры
@@ -986,9 +982,7 @@ async def check_finish_game_penalti(callback: types.CallbackQuery, res: list, sc
                        f"Предлагаем вам переигровку или же ничью, выбор за вами!"
 
             msg = await bot.send_message(res[1], text=draw_str, reply_markup=InlineButtons.pen_finished_0_kb())
-            await insert_lk_message_id(msg.message_id, game_res[1])
             msg = await bot.send_message(res[2], text=draw_str, reply_markup=InlineButtons.pen_finished_0_kb())
-            await insert_lk_message_id(msg.message_id, game_res[2])
 
         else:
 
@@ -997,10 +991,9 @@ async def check_finish_game_penalti(callback: types.CallbackQuery, res: list, sc
                       f"Победитель - @{await get_username_by_id(game_res[1])}"
             msg = await bot.send_message(
                 game_res[2], text=fin_str, reply_markup=InlineButtons.pen_finished_1_kb())
-            await insert_lk_message_id(msg.message_id, game_res[2])
             msg = await bot.send_message(
                 game_res[1], text=fin_str, reply_markup=InlineButtons.pen_finished_1_kb())
-            await insert_lk_message_id(msg.message_id, game_res[1])
+
         await delete_game(callback.from_user.id)
         return True
     return False
@@ -1015,7 +1008,7 @@ async def call_trade(callback: types.CallbackQuery):
             await callback.message.delete()
             msg = await bot.send_message(callback.from_user.id,
                                          "❌ Вы отменили обмен!", reply_markup=InlineButtons.call_trade_kb())
-            await insert_lk_message_id(msg.message_id, callback.from_user.id)
+
             return
         if trade_id[0] != callback.from_user.id:
             await callback.message.delete()
@@ -1029,8 +1022,7 @@ async def call_trade(callback: types.CallbackQuery):
                 chat_id=trade_id[1], text="❌ Увы, сделка сорвалась.", reply_markup=InlineButtons.call_trade_kb())
             msg1 = await bot.send_message(
                 trade_id[0], "❌ Вы отменили обмен!", reply_markup=InlineButtons.call_trade_kb())
-        await insert_lk_message_id(msg1.message_id, trade_id[0])
-        await insert_lk_message_id(msg.message_id, trade_id[1])
+
 
     if callback.data == "trade":
         trade_id = await do_trade(callback.from_user.id)
@@ -1045,8 +1037,6 @@ async def call_trade(callback: types.CallbackQuery):
                                          reply_markup=InlineButtons.call_trade_kb())
             msg1 = await bot.send_message(trade_id[0], "✅ Cделка прошла успешно!\nВремя проверить коллекцию",
                                           reply_markup=InlineButtons.call_trade_kb())
-        await insert_lk_message_id(msg1.message_id, trade_id[0])
-        await insert_lk_message_id(msg.message_id, trade_id[1])
 
 
 # обработка платежа пользователя
@@ -1413,7 +1403,7 @@ async def admin_execute(callback: types.CallbackQuery, state: FSMContext):
 
             msg = await callback.message.edit_text(text="Сейчас нет активных промокодов",
                                                    reply_markup=AdminInlineKeyboard.adm_update_kb())
-            await insert_lk_message_id(msg.message_id, callback.from_user.id)
+
             return
         await callback.message.edit_text(
             "Выберете промокод для удаления\nВсе промокоды указаны в формате промокод - карточка",
@@ -1563,7 +1553,7 @@ async def show_all_cards(callback: types.CallbackQuery, state: FSMContext):
             msg = await bot.send_photo(callback.from_user.id,
                                        card_list[num].photo_id,
                                        reply_markup=AdminInlineKeyboard.show_all_cards_kb(tasks, buttons))
-            await insert_lk_message_id(msg.message_id, callback.from_user.id)
+
         else:
             await callback.message.edit_media(media=InputMediaPhoto(media=card_list[num].photo_id),
                                               reply_markup=AdminInlineKeyboard.show_all_cards_kb(tasks, buttons))
@@ -1585,7 +1575,7 @@ async def delete_card(callback: types.CallbackQuery):
 
     msg = await bot.send_message(callback.from_user.id, "Карточка была успешно удалена",
                                  reply_markup=AdminInlineKeyboard.adm_add_card_kb())
-    await insert_lk_message_id(msg.message_id, callback.from_user.id)
+
 
 
 @dp.callback_query(F.data[:6] == "promo_")
@@ -1608,7 +1598,7 @@ async def add_card_to_promo(callback: types.CallbackQuery):
     await callback.message.delete()
     msg = await bot.send_message(callback.from_user.id, "Промокод был успешно добавлен! Время его проверить",
                                  reply_markup=AdminInlineKeyboard.add_card_to_promo_kb())
-    await insert_lk_message_id(msg.message_id, callback.from_user.id)
+
 
 
 @dp.message(F.photo | F.text)
@@ -1632,7 +1622,7 @@ async def check_promocode(message: types.Message, state: FSMContext):
             msg = await bot.send_message(message.from_user.id,
                                          "Увы, но такого промокода не существует, либо он больше недействительный 😔",
                                          reply_markup=AdminInlineKeyboard.check_promo_kb())
-            await insert_lk_message_id(msg.message_id, message.from_user.id)
+
 
     if state_ == UserState.get_promo_text.state:
 
@@ -1668,13 +1658,13 @@ async def check_promocode(message: types.Message, state: FSMContext):
             card = await get_trade_card(message.from_user.id, 0)
             msg = await bot.send_message(message.from_user.id, "✅ Предложение обмена успешно отправлено "
                                                                "пользователю - @" + username)
-            await insert_lk_message_id(msg.message_id, message.from_user.id)
+
 
             msg = await bot.send_photo(chat_id=user_id, photo=card.photo_id,
                                        caption="Вам поступило предложение обмена от - @" +
                                                await get_username_by_id(message.from_user.id),
                                        reply_markup=InlineButtons.trade_kb())
-            await insert_lk_message_id(msg.message_id, user_id)
+
 
     if state_ == UserState.get_username_for_pen.state:
 
@@ -1685,7 +1675,7 @@ async def check_promocode(message: types.Message, state: FSMContext):
                                          "Этому пользователю нельзя предложить игру в Пенальти ☹️\n"
                                          "Ему нужно запустить этого бота и получить свою первую карточку!",
                                          reply_markup=InlineButtons.back_back_kb())
-            await insert_lk_message_id(msg.message_id, message.from_user.id)
+
         else:
             # ниже добавлена проверка на разницу в рейтинге
             if await check_delta_rating(message.from_user.id, int(tele_id2)):
@@ -1693,7 +1683,7 @@ async def check_promocode(message: types.Message, state: FSMContext):
                                              "Ты не можешь сыграть в пенальти с " + message.text +
                                              " из-за большой разницы в рейтинге☹️",
                                              reply_markup=InlineButtons.back_back_kb())
-                await insert_lk_message_id(msg.message_id, message.from_user.id)
+
                 return
 
             if not await user_in_game(int(tele_id2)):
@@ -1704,7 +1694,7 @@ async def check_promocode(message: types.Message, state: FSMContext):
                                              "@" + await get_username_by_id(
                                                  message.from_user.id) + " предлагает вам сыграть в Пенальти!",
                                              reply_markup=InlineButtons.user_game_kb(False))
-                await insert_lk_message_id(msg.message_id, int(tele_id2))
+
                 await bot.send_message(message.from_user.id,
                                        "📩Ваше предложение сыграть в Пенальти было отправлено " + message.text + "!")
 
@@ -1716,7 +1706,7 @@ async def check_promocode(message: types.Message, state: FSMContext):
                                              "Этому пользователю нельзя предложить игру в Пенальти ☹️\n"
                                              "Он уже находиться в игре, дождитесь конца или предложите игру кому-нибудь другому",
                                              reply_markup=InlineButtons.user_game_kb(True))
-                await insert_lk_message_id(msg.message_id, message.from_user.id)
+
 
     if state_ == UserState.get_username_for_admin.state:
 
@@ -1730,7 +1720,7 @@ async def check_promocode(message: types.Message, state: FSMContext):
             user_str = await get_user_info(user_id, message.text)
             msg = await bot.send_message(
                 message.from_user.id, text=user_str, reply_markup=AdminInlineKeyboard.get_username_for_admin_kb())
-            await insert_lk_message_id(msg.message_id, message.from_user.id)
+
 
     if state_ == UserState.get_photo.state:
 
@@ -1748,7 +1738,7 @@ async def check_promocode(message: types.Message, state: FSMContext):
         else:
             msg = await bot.send_message(message.from_user.id, "Некорректный ввод данных, попробуйте снова",
                                          reply_markup=AdminInlineKeyboard.get_photo_kb())
-            await insert_lk_message_id(msg.message_id, message.from_user.id)
+
 
             await state.set_state(UserState.get_photo.state)
 
@@ -1768,7 +1758,7 @@ async def check_promocode(message: types.Message, state: FSMContext):
             msg = await bot.send_message(
                 message.from_user.id, "Произошла какая-то ошибка, уже работаем над этим",
                 reply_markup=AdminInlineKeyboard.get_photo_kb())
-            await insert_lk_message_id(msg.message_id, message.from_user.id)
+
 
     if state_ == UserState.get_new_photo.state:
 
@@ -1786,14 +1776,14 @@ async def check_promocode(message: types.Message, state: FSMContext):
             msg = await bot.send_message(
                 message.from_user.id, "Теперь отправьте фото карточки игрока",
                 reply_markup=AdminInlineKeyboard.get_new_photo_kb(False))
-            await insert_lk_message_id(msg.message_id, message.from_user.id)
+
 
             await state.update_data(card_id=card_id)
             await state.set_state(UserState.save_new_card_photo.state)
         else:
             msg = await bot.send_message(message.from_user.id, "Некорректный ввод данных, попробуйте снова",
                                          reply_markup=AdminInlineKeyboard.get_new_photo_kb(False))
-            await insert_lk_message_id(msg.message_id, message.from_user.id)
+
 
             await state.update_data(card_id=card_id)
             await state.set_state(UserState.get_new_photo.state)
@@ -1810,13 +1800,13 @@ async def check_promocode(message: types.Message, state: FSMContext):
                                  new_card[1], caption=new_card[0],
                                  reply_markup=AdminInlineKeyboard.save_new_card_photo_kb(True))
             msg = await bot.send_message(message.from_user.id, ".")
-            await insert_lk_message_id(msg.message_id, message.from_user.id)
+
         else:
 
             msg = await bot.send_message(
                 message.from_user.id, "Произошла какая-то ошибка, уже работаем над этим",
                 reply_markup=AdminInlineKeyboard.save_new_card_photo_kb(False))
-            await insert_lk_message_id(msg.message_id, message.from_user.id)
+
 
 
 async def get_show_new_cards(message: types.Message):
@@ -1877,21 +1867,21 @@ async def time_events_checker():
                                                      "Игрок - @" + await get_username_by_id(
                                                          result[1]) + " слишком долго не отвечал, вы победили!",
                                                      reply_markup=InlineButtons.time_events_checker_kb())
-                        await insert_lk_message_id(msg.message_id, result[0])
+
                         msg = await bot.send_message(result[1],
                                                      "Тебя слишком долго не было в игре, поэтому тебе засчитано поражение",
                                                      reply_markup=InlineButtons.time_events_checker_kb())
-                        await insert_lk_message_id(msg.message_id, result[1])
+
 
                     else:
                         msg = await bot.send_message(result[0],
                                                      "Матч признан несостоявшимся из-за длительного ожидания 🏳️",
                                                      reply_markup=InlineButtons.time_events_checker_kb(False))
-                        await insert_lk_message_id(msg.message_id, result[0])
+
                         msg = await bot.send_message(result[1],
                                                      "Матч признан несостоявшимся из-за длительного ожидания 🏳️",
                                                      reply_markup=InlineButtons.time_events_checker_kb(False))
-                        await insert_lk_message_id(msg.message_id, result[1])
+
         await asyncio.sleep(10)
         # проверка юзеров на возможность получить карточку
         user_list = await get_users_id_for_free_card()
@@ -1901,7 +1891,7 @@ async def time_events_checker():
                 try:
                     msg = await bot.send_message(user_id, "Привет! Ты можешь забрать свою бесплатную карту! 🎁",
                                                  reply_markup=InlineButtons.time_events_checker_2_kb())
-                    await insert_lk_message_id(msg.message_id, user_id)
+
                     await set_get_msg(user_id, 1)
                 except Exception as e:
                     print(e)
