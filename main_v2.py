@@ -990,13 +990,13 @@ async def check_finish_game_penalti(callback: types.CallbackQuery, res: list, sc
 
             fin_str = f"Результаты ударов @{await get_username_by_id(res[2])}:\n{scores[0]}\n" \
                       f"Результаты ударов @{await get_username_by_id(res[1])}:\n{scores[1]}\n" \
-                      f"Победитель - @{await get_username_by_id(game_res[2])}"
-            msg = await bot.send_message(
-                game_res[1], text=fin_str, reply_markup=InlineButtons.pen_finished_1_kb())
-            await insert_lk_message_id(msg.message_id, game_res[1])
+                      f"Победитель - @{await get_username_by_id(game_res[1])}"
             msg = await bot.send_message(
                 game_res[2], text=fin_str, reply_markup=InlineButtons.pen_finished_1_kb())
             await insert_lk_message_id(msg.message_id, game_res[2])
+            msg = await bot.send_message(
+                game_res[1], text=fin_str, reply_markup=InlineButtons.pen_finished_1_kb())
+            await insert_lk_message_id(msg.message_id, game_res[1])
         await delete_game(callback.from_user.id)
         return True
     return False
