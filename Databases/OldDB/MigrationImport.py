@@ -18,7 +18,7 @@ async def main():
                 for i in file:
                     data.append(ast.literal_eval(i.rstrip()))
 
-            for i in file:
+            for i in data:
                 date_string1 = i[4]
                 date_string2 = i[7]
 
@@ -46,7 +46,7 @@ async def main():
                 for i in file:
                     data.append(ast.literal_eval(i.rstrip()))
 
-            for i in file:
+            for i in data:
                 date_string = i[1]
                 date_format = "%Y-%m-%d %H:%M:%S.%f"
 
@@ -66,7 +66,7 @@ async def main():
                 for i in file:
                     data.append(ast.literal_eval(i.rstrip()))
 
-            for i in file:
+            for i in data:
                 date_string1 = i[7]
                 date_string2= i[8]
 
@@ -95,7 +95,7 @@ async def main():
                 for i in file:
                     data.append(ast.literal_eval(i.rstrip()))
 
-            for i in file:
+            for i in data:
 
                 ls = CardsOfUser(card_key=int(i[0]),
                           is_new=bool(i[3]),
@@ -111,7 +111,7 @@ async def main():
                 for i in file:
                     data.append(ast.literal_eval(i.rstrip()))
 
-            for i in file:
+            for i in data:
                 ls = CheckPromo(id=random.randint(1000000000,1000000000000),
                                  tele_id=int(i[0]),
                                  promo=i[1],
@@ -125,7 +125,7 @@ async def main():
                 for i in file:
                     data.append(ast.literal_eval(i.rstrip()))
 
-            for i in file:
+            for i in data:
                 ls = Offer(id=random.randint(1000000000, 1000000000000),
                                  tele_id1=int(i[0]),
                                  tele_id2=int(i[1]),
@@ -143,7 +143,7 @@ async def main():
                 for i in file:
                     data.append(ast.literal_eval(i.rstrip()))
 
-            for i in file:
+            for i in data:
                 ls = Operation(operation_id=i[0],
                            operation_name=i[1],
                            user_id=int(i[2]),
@@ -158,7 +158,7 @@ async def main():
                 for i in file:
                     data.append(ast.literal_eval(i.rstrip()))
 
-            for i in file:
+            for i in data:
                 ls = Pack(buy_id=int(i[0]),
                                cost=int(i[1]),
                                name=str(i[2])
@@ -199,7 +199,7 @@ async def main():
                 for i in file:
                     data.append(ast.literal_eval(i.rstrip()))
 
-            for i in file:
+            for i in data:
                 ls = Promo(promo_id=int(i[0]),
                                promo=i[1],
                                card_id=int(i[2]),
@@ -214,7 +214,7 @@ async def main():
                 for i in file:
                     data.append(ast.literal_eval(i.rstrip()))
 
-            for i in file:
+            for i in data:
                 date_string = i[2]
                 date_format = "%Y-%m-%d %H:%M:%S.%f"
 
@@ -234,7 +234,7 @@ async def main():
                 for i in file:
                     data.append(ast.literal_eval(i.rstrip()))
 
-            for i in file:
+            for i in data:
                 ls = Admin(tele_id=int(i[0]))
 
                 session.add(ls)
