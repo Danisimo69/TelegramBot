@@ -27,12 +27,18 @@ async def main():
                 try:
                     date_obj1 = datetime.datetime.strptime(date_string1, date_format)
                 except:
-                    date_obj1 = datetime.datetime.strptime(date_string1, "%Y-%m-%d")
+                    try:
+                        date_obj1 = datetime.datetime.strptime(date_string1, "%Y-%m-%d")
+                    except:
+                        date_obj1=None
 
                 try:
                     date_obj2 = datetime.datetime.strptime(date_string2, date_format)
                 except:
-                    date_obj2 = datetime.datetime.strptime(date_string2, "%Y-%m-%d")
+                    try:
+                        date_obj2 = datetime.datetime.strptime(date_string2, "%Y-%m-%d")
+                    except:
+                        date_obj2=None
 
                 ls = User(tele_id=int(i[0]),
                           card_num=int(i[1]),
@@ -60,7 +66,11 @@ async def main():
                 try:
                     date_obj = datetime.datetime.strptime(date_string, date_format)
                 except:
-                    date_obj = datetime.datetime.strptime(date_string, "%Y-%m-%d")
+
+                    try:
+                        date_obj = datetime.datetime.strptime(date_string, "%Y-%m-%d")
+                    except:
+                        date_obj=None
 
 
                 ls = LuckyStrike(tele_id=int(i[0]),
@@ -86,12 +96,19 @@ async def main():
                 try:
                     date_obj1 = datetime.datetime.strptime(date_string1, date_format)
                 except:
-                    date_obj1 = datetime.datetime.strptime(date_string1, "%Y-%m-%d")
+                    try:
+                        date_obj1 = datetime.datetime.strptime(date_string1, "%Y-%m-%d")
+                    except:
+
+                        date_obj1 = None
 
                 try:
                     date_obj2 = datetime.datetime.strptime(date_string2, date_format)
                 except:
-                    date_obj2 = datetime.datetime.strptime(date_string2, "%Y-%m-%d")
+                    try:
+                        date_obj2 = datetime.datetime.strptime(date_string2, "%Y-%m-%d")
+                    except:
+                        date_obj2=None
 
 
 
@@ -240,7 +257,11 @@ async def main():
                 try:
                     date_obj = datetime.datetime.strptime(date_string, date_format)
                 except:
-                    date_obj = datetime.datetime.strptime(date_string, "%Y-%m-%d")
+
+                    try:
+                        date_obj = datetime.datetime.strptime(date_string, "%Y-%m-%d")
+                    except:
+                        date_obj=None
 
 
                 ls = Spam(user_id=int(i[0]),
