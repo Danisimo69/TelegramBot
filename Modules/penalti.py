@@ -195,6 +195,16 @@ async def change_def_status(keeper_id: int):
             await session.commit()
 
 
+async def check_def_and_kicker_status(keeper_id: int):
+    async with async_session() as session:
+        async with session.begin():
+
+            status = await session.execute(
+                select(Penalty).where(or_(Penalty.user1_id == keeper_id, Penalty.user2_id == keeper_id)))
+            status = status.scalar_one_or_none()
+
+            return [status.def_status, status.turn == keeper_id]
+
 async def check_def_status(keeper_id: int):
     async with async_session() as session:
         async with session.begin():

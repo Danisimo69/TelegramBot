@@ -135,6 +135,8 @@ async def answer_questions(callback: types.CallbackQuery):
 async def return_to_lk(callback: types.CallbackQuery, state: FSMContext):
     await state.clear()
 
+    await bot.answer_callback_query(callback.id)
+
     await calc_card_rating(callback.from_user.id)
     await cancel_trade(callback.from_user.id)
 
@@ -774,7 +776,7 @@ async def insert_card_to_offer(callback: types.CallbackQuery, state: FSMContext)
 
 # функция игры в пенальти
 @dp.callback_query(F.data[:4] == "pen_")
-async def penalti_game(callback: types.CallbackQuery):
+async def penalti_game(callback: types.CallbackQuery, state: FSMContext):
     if callback.data == "pen_canc":
         await bot.answer_callback_query(callback.id)
 
@@ -809,10 +811,18 @@ async def penalti_game(callback: types.CallbackQuery):
                              reply_markup=InlineButtons.pen_start_kb())
     else:
 
-        if not (await kicker_status(callback.from_user.id)) and not (await check_def_status(callback.from_user.id)):
+        await callback.message.edit_reply_markup(reply_markup=None)
+        # print(callback.data)
+
+
+        res = await check_def_and_kicker_status(callback.from_user.id)
+
+        if not res[1] and not res[0]: # not (await kicker_status(callback.from_user.id)) and not (await check_def_status(callback.from_user.id)):
+
+            await callback.message.edit_reply_markup(reply_markup=InlineButtons.pen_else_kb())
             await callback.answer("Твой соперник еще не сделал удар.", show_alert=True)
 
-        elif (await check_def_status(callback.from_user.id)) and not (await kicker_status(callback.from_user.id)):
+        elif not res[1] and res[0]: # (await check_def_status(callback.from_user.id)) and not (await kicker_status(callback.from_user.id)):
 
             num = callback.data.replace("pen_", "")
 
