@@ -176,12 +176,20 @@ class InlineButtons(InlineConstructor):
         btns = []
 
         if "not_section" in tasks:
+
             section = add_data['section']
-            schema.append(1)
-            btns.append({"text": "Добавить",
-                     "callback_data":"adm_add_" + section})
-            # btns.append({"text": "Удалить",
-            #          "callback_data": "adm_del_" + section})
+            if section == "promo":
+                schema.append(2)
+                btns.append({"text": "Добавить",
+                         "callback_data":"adm_add_" + section})
+                btns.append({"text": "Удалить",
+                         "callback_data": "adm_del_" + section})
+            else:
+                schema.append(1)
+                btns.append({"text": "Добавить",
+                             "callback_data": "adm_add_" + section})
+                # btns.append({"text": "Удалить",
+                #          "callback_data": "adm_del_" + section})
 
         if "card" in tasks:
             schema.append(1)

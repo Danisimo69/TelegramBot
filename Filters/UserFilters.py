@@ -12,7 +12,7 @@ class Get_Buy_Message_Filter(BaseFilter):
 
 class Redact_Card_Filter(BaseFilter):
     async def __call__(self, callback: CallbackQuery) -> bool:
-        return True if callback.data.isdigit() and int(callback.data.split("_")[0]) >= 15 else False
+        return True if callback.data.split("_")[1] in ["old", "new"] else False
 
 class Show_All_Cards_Filter(BaseFilter):
     async def __call__(self, callback: CallbackQuery) -> bool:

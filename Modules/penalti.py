@@ -86,6 +86,7 @@ async def set_kick_time(tele_id: int):
 async def place_turn_in_db(tele_id: int, num: str):
     async with async_session() as session:
         async with session.begin():
+
             res = await session.execute(select(Penalty).where(or_(Penalty.user1_id == tele_id, Penalty.user2_id == tele_id)))
             res = res.scalar_one_or_none()
 
@@ -177,8 +178,12 @@ async def get_kicker(tele_id: int):
 async def change_kicker(keeper_id: int):
     async with async_session() as session:
         async with session.begin():
-            await session.execute(update(Penalty).where(or_(Penalty.user1_id == keeper_id, Penalty.user2_id == keeper_id)).values(turn=keeper_id))
-            await session.commit()
+
+            try:
+                await session.execute(update(Penalty).where(and_(or_(Penalty.user1_id == keeper_id, Penalty.user2_id == keeper_id), Penalty.turn!=keeper_id)).values(turn=keeper_id))
+                await session.commit()
+            except:
+                pass
 
 async def change_def_status(keeper_id: int):
     async with async_session() as session:
@@ -217,10 +222,23 @@ async def get_score_str(tele_id: int):
             if score == "0":
                 second_str += "❌"
 
-        if len(game.score1) > len(game.score2):
+        # print([first_str, second_str], [len(first_str),len(second_str)])
+
+        print(tele_id, game.turn, game.def_status)
+
+        if game.turn == tele_id and not game.def_status and tele_id == game.user2_id:
+            first_str += "\U0000231B"
+
+        else:
             second_str += "\U0000231B"
-        # elif len(game.score1) < len(game.score2):
+
+
+        # if len(first_str) > len(second_str):
+        #     second_str += "\U0000231B"
+        # elif len(first_str) < len(second_str):
         #     first_str += "\U0000231B"
+
+#         print([first_str, second_str], [len(first_str),len(second_str)])
 
         if game.user1_id == game.turn:
             return [first_str, second_str]
@@ -289,8 +307,14 @@ async def destroy_game(tele_id: int):
 
                 if delta[1] == 0:
 
+                    game_result = await session.execute(
+                        select(Penalty).where(or_(Penalty.user1_id == tele_id, Penalty.user2_id == tele_id)))
+                    game = game_result.scalar_one_or_none()
+
                     await session.execute(delete(Penalty).where(or_(Penalty.user1_id == tele_id, Penalty.user2_id == tele_id)))
                     await session.commit()
+
+                    return [game.user1_id, game.user2_id, False]
 
                 else:
 
@@ -314,13 +338,8 @@ async def destroy_game(tele_id: int):
 
                     await session.commit()
 
-            if delta[1] == 0:
-                return [game.user1_id, game.user2_id, False]
-
-            else:
-                await delete_game(tele_id)
-                return [ans, delta[1], True]
-
+                    await delete_game(tele_id)
+                    return [ans, delta[1], True]
     else:
         return [0, 0]
 

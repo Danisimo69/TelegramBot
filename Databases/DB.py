@@ -48,7 +48,8 @@ class CardsOfUser(Base):
 
 class CheckPromo(Base):
     __tablename__ = 'check_promo'
-    tele_id = Column(BigInteger, primary_key=True)
+    id = Column(BigInteger, primary_key=True)
+    tele_id = Column(BigInteger)
     promo = Column(Text)
 
 class Offer(Base):

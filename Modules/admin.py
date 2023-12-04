@@ -86,7 +86,7 @@ async def check_promo_(tele_id: int, input_str: str):
                     return [False, -1]
 
                 # Insert into check_promo if the promo is valid and not used by this tele_id
-                new_check_promo = CheckPromo(tele_id=tele_id, promo=input_str)
+                new_check_promo = CheckPromo(id = random.randint(10000000,10000000000),tele_id=tele_id, promo=input_str)
                 session.add(new_check_promo)
                 await session.commit()
 

@@ -96,7 +96,7 @@ async def get_random_card(card_num: int, type: str):
             card_list = card_result.scalars().all()
             # print(card_list)
             try:
-                index = random.randint(0, len(card_list) - 1) if len(card_list)!=0 else 0
+                index = random.randint(0, len(card_list) - 1) if len(card_list) != 0 else 0
                 print(index)
                 res_cards.append(card_list[index])
             except:

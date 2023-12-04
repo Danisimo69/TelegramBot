@@ -263,6 +263,8 @@ async def get_user_card_list(tele_id: int):
             card_result = await session.execute(select(Card).where(Card.card_id == card.id))
             card_list.append(card_result.scalar_one())
 
+        card_list = sorted(card_list, key=lambda card: card.points, reverse=False)
+
         return [card_list, ans]
 
 async def get_lk_id_message(tele_id: int):
@@ -284,7 +286,7 @@ async def get_operation_id(tele_id: int, product_id: int):
 
 async def get_price(prod_id: int):
     async with async_session() as session:
-        result = await session.execute(select(Pack.cost).where(Pack.buy_id == prod_id))
+        result = await session.execute(select(Pack).where(Pack.buy_id == prod_id))
         pack = result.scalar_one_or_none()
         return pack.cost if pack else None
 
@@ -338,7 +340,7 @@ async def edit_card_in_db(card_id: int, new_info):
                     player_nickname=new_info[1],
                     team=new_info[2],
                     rareness=get_rareness_by_str(new_info[3]),
-                    points=new_info[4],
+                    points=int(new_info[4]),
                     updated_at=datetime.datetime.now()
                 )
             )

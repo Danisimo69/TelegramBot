@@ -77,7 +77,7 @@ class InlineButtons(InlineConstructor):
     def trade_kb() -> aiogram.types.InlineKeyboardMarkup:
         schema = [1, 1]
         btns = [{"text": "🃏 Выбрать карту для обмена",
-                 "callback_data": "chan_by_0"},
+                 "callback_data": "my_collection:chan"},
                 {"text": "❌ Отклонить обмен",
                  "callback_data": "trade_canc"}
                 ]
@@ -195,6 +195,14 @@ class InlineButtons(InlineConstructor):
         schema = [1]
         btns = [{"text": "⏪ Назад",
                  "callback_data": "back"}
+                ]
+        return InlineButtons._create_kb(btns, schema)
+
+    @staticmethod
+    def back_to_info_kb() -> aiogram.types.InlineKeyboardMarkup:
+        schema = [1]
+        btns = [{"text": "⏪ Назад",
+                 "callback_data": "info"}
                 ]
         return InlineButtons._create_kb(btns, schema)
 
@@ -346,6 +354,13 @@ class InlineButtons(InlineConstructor):
         schema = []
         btns = []
 
+        # print(tasks)
+
+        if "Выбрать для обмена" in tasks:
+            schema.append(1)
+            btns.append(
+                {"text": "Выбрать для обмена",
+                 "callback_data": add_data['Выбрать для обмена']})
 
         if "num1" in tasks:
             schema.append(1)
@@ -380,6 +395,11 @@ class InlineButtons(InlineConstructor):
                  "callback_data": add_data['>>>']}
             )
 
+        if "num0_chan" in tasks:
+            schema.append(1)
+            btns.append({"text": "❌ Отклонить обмен",
+                         "callback_data": "trade_canc"})
+
         if "num0_not_chan" in tasks:
 
             schema.append(1)
@@ -397,6 +417,10 @@ class InlineButtons(InlineConstructor):
                  "callback_data": add_data["num1_data"]}
             )
 
+        if "num_len-1_chan" in tasks:
+            schema.append(1)
+            btns.append({"text": "❌ Отклонить обмен",
+                         "callback_data": "trade_canc"})
 
         if "num_len-1_not_chan" in tasks:
 
@@ -422,6 +446,12 @@ class InlineButtons(InlineConstructor):
                 {"text": ">>",
                  "callback_data": add_data['>>>']}
             )
+
+        if "num_else_chan" in tasks:
+            schema.append(1)
+            btns.append({"text": "❌ Отклонить обмен",
+                         "callback_data": "trade_canc"})
+
 
         if "num_else_not_chan" in tasks:
 
@@ -485,7 +515,7 @@ class InlineButtons(InlineConstructor):
     def call_trade_kb() -> aiogram.types.InlineKeyboardMarkup:
         schema = [1, 1, ]
         btns = [{"text": "🎭 Обмен картами",
-                 "callback_data": "chan_by_0"},
+                 "callback_data": "my_collection:chan"},
                 {"text": "🧑💻 В личный кабинет",
                  "callback_data": "back"}
                 ]
@@ -562,19 +592,62 @@ class InlineButtons(InlineConstructor):
         return InlineButtons._create_kb(btns, schema)
 
     @staticmethod
-    def show_new_card_kb(card_info: bool = True) -> aiogram.types.InlineKeyboardMarkup:
+    def show_new_card_kb(card_info: bool = True, add_data: dict = None) -> aiogram.types.InlineKeyboardMarkup:
         if card_info:
             schema = [1]
             btns = [
                 {"text": "✅ Принять",
                  "callback_data": "back"}
             ]
+
         else:
-            schema = [1]
-            btns = [
-                {"text": "Дальше \U0001F449",
-                 "callback_data": "slide_bought_cards"}
-            ]
+
+            if add_data['format'] == "first":
+
+                schema = [3,1]
+                btns = [
+                    {"text": "({}/{})".format(add_data['card_number'],add_data['cards']),
+                     "callback_data": "slide_bought_cards:nothing"},
+                    {"text": ">",
+                     "callback_data": "slide_bought_cards:next"},
+                    {"text": ">>",
+                     "callback_data": "slide_bought_cards:last"},
+                    {"text": "🧑💻 В личный кабинет",
+                     "callback_data": "back"}
+                ]
+
+            elif add_data['format'] == "...":
+
+                schema = [5,1]
+                btns = [
+                    {"text": "<<",
+                     "callback_data": "slide_bought_cards:first"},
+                    {"text": "<",
+                     "callback_data": "slide_bought_cards:previous"},
+                    {"text": "({}/{})".format(add_data['card_number'],add_data['cards']),
+                     "callback_data": "slide_bought_cards:nothing"},
+                    {"text": ">",
+                     "callback_data": "slide_bought_cards:next"},
+                    {"text": ">>",
+                     "callback_data": "slide_bought_cards:last"},
+                    {"text": "🧑💻 В личный кабинет",
+                     "callback_data": "back"}
+                ]
+
+            else:
+                schema = [3, 1]
+                btns = [
+                    {"text": "<<",
+                     "callback_data": "slide_bought_cards:first"},
+                    {"text": "<",
+                     "callback_data": "slide_bought_cards:previous"},
+                    {"text": "({}/{})".format(add_data['card_number'], add_data['cards']),
+                     "callback_data": "slide_bought_cards:nothing"},
+                    {"text": "🧑💻 В личный кабинет",
+                     "callback_data": "back"}
+                ]
+
+
         return InlineButtons._create_kb(btns, schema)
 
     @staticmethod
@@ -622,32 +695,45 @@ class InlineButtons(InlineConstructor):
         return InlineButtons._create_kb(btns, schema)
 
     @staticmethod
-    def collection_kb() -> aiogram.types.InlineKeyboardMarkup:
+    def collection_kb(trade_mode: bool = False) -> aiogram.types.InlineKeyboardMarkup:
 
-        schema = [1,1,1,1]
-        btns = [{"text": "Все карты",
-                 "callback_data": "one_by_0"},
-                {"text": "По редкости",
-                 "callback_data": "rare_mode"},
-                {"text": "Посмотреть списком",
-                 "callback_data": "coll"},
-                {"text": "⏪ Назад",
-                 "callback_data": "back"},
-                ]
+
+        if trade_mode:
+            schema = [1,1,1]
+            btns = [{"text": "🃏 Все карты",
+                     "callback_data": "chan_by_0"},
+                    {"text": "🀄 По редкости",
+                     "callback_data": "rare_mode:chan"},
+                    {"text": "⏪ Назад",
+                     "callback_data": "back"},
+                    ]
+
+        else:
+            schema = [1, 1, 1, 1]
+            btns = [{"text": "🃏 Все карты",
+                     "callback_data": "one_by_0"},
+                    {"text": "🀄 По редкости",
+                     "callback_data": "rare_mode:None"},
+                    {"text": "📋 Посмотреть списком",
+                     "callback_data": "coll"},
+                    {"text": "⏪ Назад",
+                     "callback_data": "back"},
+                    ]
 
         return InlineButtons._create_kb(btns, schema)
 
     @staticmethod
-    def back_lk_kb(admin_status=False) -> aiogram.types.InlineKeyboardMarkup:
+    def back_lk_kb(admin_status:bool =False) -> aiogram.types.InlineKeyboardMarkup:
 
         if admin_status:
             schema = [2,2,1, 1, 1]
-            btns = [{"text": "🧳 Моя коллекция",
-                     "callback_data": "my_collection"},
-                    {"text": "🃏 Получить карту",
+            btns = [{"text": "🃏 Получить карту",
                      "callback_data": "getcar"},
+                    {"text": "🧳 Моя коллекция",
+                     "callback_data": "my_collection"},
+
                     {"text": "🎭 Обмен картами",
-                     "callback_data": "chan_by_0"},
+                     "callback_data": "my_collection:chan"},
                     {"text": "🏆 Общий рейтинг",
                      "callback_data": "rate"},
                     {"text": "🎲 Мини-игры",
@@ -659,12 +745,13 @@ class InlineButtons(InlineConstructor):
                     ]
         else:
             schema = [2,2, 1, 1]
-            btns = [{"text": "🧳 Моя коллекция",
-                     "callback_data": "my_collection"},
-                    {"text": "🃏 Получить карту",
+            btns = [{"text": "🃏 Получить карту",
                      "callback_data": "getcar"},
+                    {"text": "🧳 Моя коллекция",
+                     "callback_data": "my_collection"},
+
                     {"text": "🎭 Обмен картами",
-                     "callback_data": "chan_by_0"},
+                     "callback_data": "my_collection:chan"},
                     {"text": "🏆 Общий рейтинг",
                      "callback_data": "rate"},
                     {"text": "🎲 Мини-игры",
