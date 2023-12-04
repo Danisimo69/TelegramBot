@@ -1,8 +1,7 @@
 import sys
 
-from main_config import admins
-
 sys.path.append('/root/Offside-bot/TelegramBot')
+from main_config import admins
 
 from Databases.DB import *
 
