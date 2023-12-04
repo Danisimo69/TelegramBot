@@ -18,7 +18,14 @@ async def main():
                 for i in file:
                     data.append(ast.literal_eval(i.rstrip()))
 
+            used = []
+
             for i in data:
+
+                if i[0] in used:
+                    continue
+                used.append(i[0])
+
                 date_string1 = i[4]
                 date_string2 = i[7]
 
