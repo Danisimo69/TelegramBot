@@ -121,7 +121,7 @@ async def calc_card_rating(tele_id: int):
             await session.commit()
 
 
-async def place_user_in_bd(tele_id: int):
+async def place_user_in_bd(tele_id: int, username: str):
     async with async_session() as session:
         async with session.begin():
             users_result = await session.execute(select(User).where(User.tele_id == tele_id))
@@ -131,10 +131,29 @@ async def place_user_in_bd(tele_id: int):
 
             if not users_result:
                 register_at = datetime.datetime.now()
-                new_user = User(tele_id=tele_id, card_num=0, card_rating=0, penalty_rating=100, register_at=register_at)
+                new_user = User(tele_id=tele_id, username=username, card_num=0, card_rating=0, penalty_rating=100, register_at=register_at)
                 session.add(new_user)
                 await session.commit()
 
+async def update_user_username(tele_id: int, username: str):
+    async with async_session() as session:
+        async with session.begin():
+            users_result = await session.execute(select(User).where(User.tele_id == tele_id))
+            users_result = users_result.scalar_one_or_none()
+
+            if users_result:
+                users_result.username = username
+                await session.commit()
+
+
+async def get_user_by_username(username: str):
+    async with async_session() as session:
+        async with session.begin():
+            users_result = await session.execute(select(User).where(User.username == username))
+            users_result = users_result.scalar_one_or_none()
+
+            if users_result:
+                return users_result.tele_id
 
 async def clear_non_active_users():
     async with async_session() as session:

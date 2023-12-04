@@ -1,12 +1,16 @@
 import asyncio
+import sys
 
 from yoomoney import Authorize
 from yoomoney import Client
 from yoomoney import Quickpay
 
+sys.path.append('/root/Offside-bot/TelegramBot')
+from main_config import wallet_number, yoomoney_token
+
+
 # Токен кошелька
-yoomoney_token = "4100118467972256.C27F91C9CE80D37B999ACBB65564FB8221BEF41D3462A7270535A0741952D3D2AC4CF6E813323E5277AEB29D8D72AADBE1393F6CD82C5197592BD518ACEB6C746CF45836FB2EECD5551C331DFE095F7C5FA4780BCEA37CFC3CE4E32068CACBBF2D8150C0FB978FCEBC10C1523C81D0C0D55E37A82AB5975A28498A2DCAA2DD4B"
-wallet_number = "4100118467972256"
+
 
 
 def get_token(client_ID, redirect_url):

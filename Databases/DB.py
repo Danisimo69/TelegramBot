@@ -115,6 +115,7 @@ class Spam(Base):
 class User(Base):
     __tablename__ = 'users'
     tele_id = Column(BigInteger, primary_key=True)
+    username = Column(String(255))
     card_num = Column(BigInteger)
     card_rating = Column(BigInteger)
     penalty_rating = Column(BigInteger)
