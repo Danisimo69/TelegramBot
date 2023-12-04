@@ -1,4 +1,7 @@
 import sys
+
+from main_config import admins
+
 sys.path.append('/root/Offside-bot/TelegramBot')
 
 from Databases.DB import *
@@ -8,7 +11,7 @@ async def AddAdmin():
 
     async with async_session() as session:
 
-        for i in [604330006,904403939,649811235]:
+        for i in admins:
             admin = Admin(tele_id=i)
 
             session.add(admin)
