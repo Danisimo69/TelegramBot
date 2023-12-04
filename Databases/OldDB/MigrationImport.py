@@ -53,6 +53,14 @@ async def main():
 
                 session.add(ls)
 
+            await session.commit()
+
+
+
+
+
+    async with async_session() as session:
+        async with session.begin():
             # lucky_strike
             data = []
             with open("Tables/lucky_strike.txt", "r") as file:
