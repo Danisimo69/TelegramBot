@@ -218,14 +218,22 @@ async def get_collection(callback: types.CallbackQuery):
     else:
 
         ans_str = "Список всех ваших карт: \n\n"
-        num = 1
+
         await calc_card_rating(callback.from_user.id)
 
         for i in range(0, len(user_cards[0])):
+
+            card_id = user_cards[0][i].card_id
+            info = 0
+            for j in user_cards[1]:
+                if j["id"] == card_id:
+                    info = j["count"]
+                    break
+
             ans_str += str(user_cards[0][i].player_nickname) + " | " + "Рейтинг: " + str(
                 user_cards[0][i].points) + " | " + \
-                       str(user_cards[1][i].num) + " шт.\n"
-            num += 1
+                       str(info) + " шт.\n"
+
 
         await callback.message.delete()
         msg = await callback.message.answer(ans_str, reply_markup=InlineButtons.take_card_kb(have_cards=True))
@@ -372,7 +380,7 @@ async def my_collection(callback: types.CallbackQuery, state: FSMContext):
 
 
 @dp.callback_query(F.data[:9] == "rare_mode")
-async def my_collection(callback: types.CallbackQuery, state: FSMContext):
+async def rare_mode_my_collection(callback: types.CallbackQuery, state: FSMContext):
     cards = await search_user_cards(callback.from_user.id, "Up")
     trade_status = callback.data.split(":")[-1]
 
@@ -1025,6 +1033,7 @@ async def call_trade(callback: types.CallbackQuery):
 
 
     if callback.data == "trade":
+        await callback.message.delete()
         trade_id = await do_trade(callback.from_user.id)
 
         if trade_id[0] != callback.from_user.id:
@@ -1044,6 +1053,7 @@ async def call_trade(callback: types.CallbackQuery):
 async def get_buy_message(callback: types.CallbackQuery, state: FSMContext):
     if callback.data == "0":
         await check_pay(callback, state)
+
     else:
         await clear_user_transaction(callback.from_user.id)
         operation_id = await get_operation_id(callback.from_user.id, int(callback.data))
@@ -1074,7 +1084,7 @@ async def check_pay(callback: types.CallbackQuery, state: FSMContext):
 
         await add_cards_to_user(random_card, callback.from_user.id)
         await push_free_card_date(callback.from_user.id)
-        # новая строчка кода ниже
+
         await set_get_msg(callback.from_user.id, 0)
         await get_new_cards(callback, state)
 
@@ -1115,7 +1125,7 @@ async def check_pay(callback: types.CallbackQuery, state: FSMContext):
                                               "время проверить удачу!", reply_markup=InlineButtons.mini_games_kb())
                 return
 
-            await add_cards_to_user(await get_random_card(card_num, "random_card"), callback.from_user.id)
+            await add_cards_to_user((await get_random_card(card_num, "random_card")), callback.from_user.id)
 
             await plus_user_transactions(callback.from_user.id)
 
@@ -1132,6 +1142,7 @@ async def check_pay(callback: types.CallbackQuery, state: FSMContext):
 # в процессе открытия набора
 @dp.callback_query(F.data == "get_new_cards")
 async def get_new_cards(callback: types.CallbackQuery, state: FSMContext):
+
     card_info = await get_last_cards(callback.from_user.id)
     # print(card_info)
     if card_info[1] >= 1:

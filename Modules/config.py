@@ -34,9 +34,9 @@ def get_rareness_by_num(num):
     elif num == 5:
         return "РЕДКАЯ"
     elif num == 6:
-        return "МИФИЧЕСКАЯ"
-    elif num == 7:
         return "ЭКСКЛЮЗИВНАЯ"
+    elif num == 7:
+        return "МИФИЧЕСКАЯ"
 
     return None
 
@@ -55,9 +55,9 @@ def get_rareness_by_str(rare_string) -> int | None:
         return 4
     if rare_str == "редкая":
         return 5
-    if rare_str == "мифическая":
-        return 6
     if rare_str == "эксклюзивная":
+        return 6
+    if rare_str == "мифическая":
         return 7
 
     return None
@@ -266,20 +266,29 @@ async def get_user_card_list(tele_id: int):
         if not cards_of_user:
             return None
 
+
         ans = []
         for card_user in cards_of_user:
 
-            num = 0
-            for res in ans:
-                if res.id == card_user.card_id:
-                    num += 1
-                    res.plus(card_user.card_id)
-            if num == 0:
-                ans.append(Card_(card_user.card_id))
+            if card_user.card_id not in [i["id"] for i in ans]:
+                ans.append({"id": card_user.card_id,
+                           "count": 1})
+            else:
+                for i in ans:
+                    if i['id'] == card_user.card_id:
+                        i["count"] += 1
+
+            # num = 0
+            # for res in ans:
+            #     if res.id == card_user.card_id:
+            #         num += 1
+            #         res.plus(card_user.card_id)
+            # if num == 0:
+            #     ans.append(Card_(card_user.card_id))
 
         card_list = []
         for card in ans:
-            card_result = await session.execute(select(Card).where(Card.card_id == card.id))
+            card_result = await session.execute(select(Card).where(Card.card_id == int(card["id"])))
             card_list.append(card_result.scalar_one())
 
         card_list = sorted(card_list, key=lambda card: card.points, reverse=False)
@@ -370,11 +379,11 @@ async def edit_card_in_db(card_id: int, new_info):
 
 
 
-async def add_cards_to_user(card_list, user_id: int):
+async def add_cards_to_user(card_list: list, user_id: int):
     async with async_session() as session:
         async with session.begin():
             for card in card_list:
-                new_card_of_user = CardsOfUser(card_key= random.randint(1000000000,1000000000000),
+                new_card_of_user = CardsOfUser(card_key= random.randint(1000000000,100000000000000),
                                                tele_id=user_id,
                                                card_id=card.card_id,
                                                is_new=True)
@@ -439,7 +448,7 @@ async def get_last_cards(tele_id: int):
 
             await session.commit()
 
-        return [array, len(cards_of_user)]
+        return [array, len(array)]
 
 async def clear_user_transaction(tele_id: int):
     async with async_session() as session:

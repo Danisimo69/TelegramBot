@@ -47,8 +47,8 @@ class CardsOfUser(Base):
     card_key = Column(BigInteger, primary_key=True)
     is_new = Column(Boolean)
 
-    tele_id = Column(BigInteger, ForeignKey('users.tele_id'))
-    card_id = Column(BigInteger, ForeignKey('cards.card_id'))
+    tele_id = Column(BigInteger)
+    card_id = Column(BigInteger)
 
 
 class CheckPromo(Base):
@@ -101,7 +101,7 @@ class Promo(Base):
     __tablename__ = 'promos'
     promo_id = Column(BigInteger, primary_key=True)
     promo = Column(Text)
-    card_id = Column(BigInteger, ForeignKey('cards.card_id'))
+    card_id = Column(BigInteger)
     usages = Column(Text, default="INF")
 
 class Spam(Base):
