@@ -55,9 +55,10 @@ async def start_message(message: types.Message, state: FSMContext):
 
     elif not await check_spam(message.from_user.id):
 
+        await place_user_in_bd(message.from_user.id, message.from_user.username)
         await update_user_username(message.from_user.id, message.from_user.username)
 
-        await place_user_in_bd(message.from_user.id, message.from_user.username)
+
         sent_msg = await message.answer("👋 *Добро пожаловать в OFFSide*\n\n"
                                         "⚽️ Здесь ты сможешь собирать карточки своих любимых футболистов "
                                         "из медиафутбола и играть в мини-игры.\n\n"
