@@ -40,12 +40,12 @@ async def main():
                     except:
                         date_obj2=None
 
-                ls = User(tele_id=int(i[0]),
-                          card_num=int(i[1]),
-                          card_rating=int(i[2]),
+                ls = User(tele_id=int(i[0]) if i[0] != None else None,
+                          card_num=int(i[1]) if i[1] != None else None,
+                          card_rating=int(i[2]) if i[2] != None else None,
                           penalty_rating=int(i[3]),
                           register_at=date_obj1,
-                          lk_message_id=int(i[5]),
+                          lk_message_id=int(i[5]) if i[5] != None else None,
                           transactions=int(i[6]),
                           free_card=date_obj2,
                           get_messages=int(i[8])
@@ -73,9 +73,9 @@ async def main():
                         date_obj=None
 
 
-                ls = LuckyStrike(tele_id=int(i[0]),
+                ls = LuckyStrike(tele_id=int(i[0]) if i[0] != None else None,
                                  free_strike=date_obj,
-                                purchased_strikes=int(i[2]),
+                                purchased_strikes=int(i[2]) if i[2] != None else None,
                                 free_strikes=int(i[3])
                 )
 
@@ -112,7 +112,7 @@ async def main():
 
 
 
-                ls = Card(card_id = int(i[0]),
+                ls = Card(card_id = int(i[0]) if i[0] != None else None,
                         photo_id = i[1],
                         player_name = i[2],
                         player_nickname = i[3],
@@ -133,10 +133,10 @@ async def main():
 
             for i in data:
 
-                ls = CardsOfUser(card_key=int(i[0]),
+                ls = CardsOfUser(card_key=int(i[0]) if i[0] != None else None,
                           is_new=bool(i[3]),
-                          tele_id=int(i[1]),
-                          card_id=int(i[2]),
+                          tele_id=int(i[1]) if i[1] != None else None,
+                          card_id=int(i[2]) if i[2] != None else None,
                           )
 
                 session.add(ls)
@@ -149,7 +149,7 @@ async def main():
 
             for i in data:
                 ls = CheckPromo(id=random.randint(1000000000,1000000000000),
-                                 tele_id=int(i[0]),
+                                 tele_id=int(i[0]) if i[0] != None else None,
                                  promo=i[1],
                                  )
 
@@ -163,12 +163,12 @@ async def main():
 
             for i in data:
                 ls = Offer(id=random.randint(1000000000, 1000000000000),
-                                 tele_id1=int(i[0]),
-                                 tele_id2=int(i[1]),
+                                 tele_id1=int(i[0]) if i[0] != None else None,
+                                 tele_id2=int(i[1]) if i[1] != None else None,
                                  agree1=bool(i[2]),
                                  agree2=bool(i[3]),
-                                 card_id1=int(i[4]),
-                                 card_id2=int(i[5]),
+                                 card_id1=int(i[4]) if i[4] != None else None,
+                                 card_id2=int(i[5]) if i[5] != None else None,
                                  )
 
                 session.add(ls)
@@ -182,7 +182,7 @@ async def main():
             for i in data:
                 ls = Operation(operation_id=i[0],
                            operation_name=i[1],
-                           user_id=int(i[2]),
+                           user_id=int(i[2]) if i[2] != None else None,
                            finished=bool(i[3])
                            )
 
@@ -195,39 +195,12 @@ async def main():
                     data.append(ast.literal_eval(i.rstrip()))
 
             for i in data:
-                ls = Pack(buy_id=int(i[0]),
-                               cost=int(i[1]),
+                ls = Pack(buy_id=int(i[0]) if i[0] != None else None,
+                               cost=int(i[1]) if i[1] != None else None,
                                name=str(i[2])
                                )
 
                 session.add(ls)
-
-                    # penalties
-                    # data = []
-                    # with open("Tables/penalti.txt", "r") as file:
-                    #     for i in file:
-                    #         data.append(ast.literal_eval(i.rstrip()))
-                    #
-                    # for i in file:
-                    #     date_string = i[1]
-                    #     date_format = "%Y-%m-%d %H:%M:%S.%f"
-                    #
-                    #     date_obj = datetime.datetime.strptime(date_string, date_format)
-                    #
-                    #     ls = Penalty(id=random.randint(1000000000, 1000000000000),
-                    #                user1_id=int(i[0]),
-                    #                user2_id=int(i[1]),
-                    #                turn=bool(i[2]),
-                    #                def_status=bool(i[3]),
-                    #                score1=int(i[4]),
-                    #                score2=int(i[5]),
-                    #                  last_kick=int(i[4]),
-                    #                  turn1=int(i[5]),
-                    #                  turn2=int(i[4]),
-                    #
-                    #                )
-                    #
-                    #     session.add(ls)
 
             # promos
             data = []
@@ -236,9 +209,9 @@ async def main():
                     data.append(ast.literal_eval(i.rstrip()))
 
             for i in data:
-                ls = Promo(promo_id=int(i[0]),
+                ls = Promo(promo_id=int(i[0]) if i[0] != None else None,
                                promo=i[1],
-                               card_id=int(i[2]),
+                               card_id=int(i[2]) if i[2] != None else None,
                                usages=str(i[3])
                                )
 
@@ -264,8 +237,8 @@ async def main():
                         date_obj=None
 
 
-                ls = Spam(user_id=int(i[0]),
-                               msg_num=int(i[1]),
+                ls = Spam(user_id=int(i[0]) if i[0] != None else None,
+                               msg_num=int(i[1]) if i[1] != None else None,
                                last_msg=date_obj,
                                banned=bool(i[3])
                                )
@@ -279,7 +252,7 @@ async def main():
                     data.append(ast.literal_eval(i.rstrip()))
 
             for i in data:
-                ls = Admin(tele_id=int(i[0]))
+                ls = Admin(tele_id=int(i[0]) if i[0] != None else None)
 
                 session.add(ls)
 
