@@ -758,7 +758,7 @@ async def insert_card_to_offer(callback: types.CallbackQuery, state: FSMContext)
 
         await callback.message.answer("Напишите юзернейм пользователя (@username), с которым хотите обменяться")
         await state.set_state(UserState.get_second_user_for_offer.state)
-        return
+
 
     elif bool_pl != -1 and not bool_pl:
         await add_card_to_offer(callback.from_user.id, card_id)
@@ -1168,7 +1168,10 @@ async def get_new_cards(callback: types.CallbackQuery, state: FSMContext):
                              reply_markup=markup)
 
     else:
-        await return_to_lk(callback)
+
+
+
+        await return_to_lk(callback, state)
 
         # await callback.message.edit_text( text="У вас нет доступных к открытию карточек", reply_markup=InlineButtons.get_second_user_for_offer_kb())
 
@@ -1654,6 +1657,7 @@ async def check_promocode(message: types.Message, state: FSMContext):
                                    reply_markup=InlineButtons.get_second_user_for_offer_kb())
         else:
             print(int(message.from_user.id), int(user_id))
+
             await insert_second_user_(int(message.from_user.id), int(user_id))
             card = await get_trade_card(message.from_user.id, 0)
             msg = await bot.send_message(message.from_user.id, "✅ Предложение обмена успешно отправлено "

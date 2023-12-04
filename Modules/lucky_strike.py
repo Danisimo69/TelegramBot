@@ -32,7 +32,7 @@ async def check_free_strike(tele_id: int):
             now = datetime.datetime.now()
             need_delta = datetime.timedelta(hours=4)
 
-            if lucky_strike is None:
+            if lucky_strike == None:
                 new_strike = LuckyStrike(tele_id=tele_id, free_strike=now)
                 session.add(new_strike)
                 await session.commit()
@@ -96,9 +96,11 @@ async def get_random_card(card_num: int, type: str):
             card_list = card_result.scalars().all()
             # print(card_list)
             try:
-                index = random.randint(0, len(card_list) - 1) if len(card_list) != 0 else 0
-                print(index)
-                res_cards.append(card_list[index])
+                # index = random.randint(0, len(card_list) - 1) if len(card_list) != 0 else 0
+                # print(index)
+                # res_cards.append(card_list[index])
+
+                res_cards.append(random.choice(card_list))
             except:
                 traceback.print_exc()
                 return []
