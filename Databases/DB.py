@@ -5,9 +5,11 @@ from sqlalchemy.ext.asyncio import AsyncAttrs, create_async_engine, async_sessio
 from sqlalchemy.orm import sessionmaker, relationship, DeclarativeBase
 from sqlalchemy.ext.declarative import declarative_base
 
+from main_config import DB_link
+
 # Настройка базы данных
 
-engine = create_async_engine('postgresql+asyncpg://postgres:Vanilla9797@localhost/TG_db_test', poolclass=NullPool)
+engine = create_async_engine(DB_link, poolclass=NullPool)
 async_session = async_sessionmaker(engine, expire_on_commit=False)
 
 class Base(AsyncAttrs, DeclarativeBase):
