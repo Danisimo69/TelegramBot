@@ -24,8 +24,15 @@ async def main():
 
                 date_format = "%Y-%m-%d %H:%M:%S.%f"
 
-                date_obj1 = datetime.datetime.strptime(date_string1, date_format)
-                date_obj2 = datetime.datetime.strptime(date_string2, date_format)
+                try:
+                    date_obj1 = datetime.datetime.strptime(date_string1, date_format)
+                except:
+                    date_obj1 = datetime.datetime.strptime(date_string1, "%Y-%m-%d")
+
+                try:
+                    date_obj2 = datetime.datetime.strptime(date_string2, date_format)
+                except:
+                    date_obj2 = datetime.datetime.strptime(date_string2, "%Y-%m-%d")
 
                 ls = User(tele_id=int(i[0]),
                           card_num=int(i[1]),
@@ -50,7 +57,11 @@ async def main():
                 date_string = i[1]
                 date_format = "%Y-%m-%d %H:%M:%S.%f"
 
-                date_obj = datetime.datetime.strptime(date_string, date_format)
+                try:
+                    date_obj = datetime.datetime.strptime(date_string, date_format)
+                except:
+                    date_obj = datetime.datetime.strptime(date_string, "%Y-%m-%d")
+
 
                 ls = LuckyStrike(tele_id=int(i[0]),
                                  free_strike=date_obj,
@@ -72,8 +83,16 @@ async def main():
 
                 date_format = "%Y-%m-%d %H:%M:%S.%f"
 
-                date_obj1 = datetime.datetime.strptime(date_string1, date_format)
-                date_obj2 = datetime.datetime.strptime(date_string2, date_format)
+                try:
+                    date_obj1 = datetime.datetime.strptime(date_string1, date_format)
+                except:
+                    date_obj1 = datetime.datetime.strptime(date_string1, "%Y-%m-%d")
+
+                try:
+                    date_obj2 = datetime.datetime.strptime(date_string2, date_format)
+                except:
+                    date_obj2 = datetime.datetime.strptime(date_string2, "%Y-%m-%d")
+
 
 
                 ls = Card(card_id = int(i[0]),
@@ -218,7 +237,11 @@ async def main():
                 date_string = i[2]
                 date_format = "%Y-%m-%d %H:%M:%S.%f"
 
-                date_obj = datetime.datetime.strptime(date_string, date_format)
+                try:
+                    date_obj = datetime.datetime.strptime(date_string, date_format)
+                except:
+                    date_obj = datetime.datetime.strptime(date_string, "%Y-%m-%d")
+
 
                 ls = Spam(user_id=int(i[0]),
                                msg_num=int(i[1]),
