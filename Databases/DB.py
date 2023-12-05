@@ -133,6 +133,7 @@ async def async_main():
 async def async_drop():
 
     async with engine.begin() as conn:
+        await conn.execute("DROP TABLE IF EXISTS users CASCADE;")
         await conn.run_sync(Base.metadata.drop_all)
 
 if __name__ == '__main__':
