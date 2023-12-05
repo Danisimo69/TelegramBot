@@ -1,6 +1,7 @@
 import asyncio
 
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Boolean, DateTime, Text, NullPool, BigInteger
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Boolean, DateTime, Text, NullPool, \
+    BigInteger, text
 from sqlalchemy.ext.asyncio import AsyncAttrs, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import sessionmaker, relationship, DeclarativeBase
 from sqlalchemy.ext.declarative import declarative_base
@@ -133,7 +134,10 @@ async def async_main():
 async def async_drop():
 
     async with engine.begin() as conn:
-        await conn.execute("DROP TABLE IF EXISTS users CASCADE;")
+        await conn.execute(text("DROP TABLE IF EXISTS cards_of_user;"))
+        await conn.execute(text("DROP TABLE IF EXISTS users CASCADE;"))
+        await conn.commit()
+
         await conn.run_sync(Base.metadata.drop_all)
 
 if __name__ == '__main__':
