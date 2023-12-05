@@ -1625,7 +1625,7 @@ async def check_promocode(message: types.Message, state: FSMContext):
 
         if res[0]:
             # тело этого if было изменено
-            if res[1] == 0:
+            if res[1] == 12340000000004321:
                 await add_cards_to_user(await get_random_card(1, "random_card"), message.from_user.id)
             else:
                 await add_card_to_user_by_card_id(res[1], message.from_user.id)

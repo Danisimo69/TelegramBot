@@ -46,15 +46,21 @@ async def insert_promo_card(promo_id: int, card_id: int):
     async with async_session() as session:
         async with session.begin():
 
+            s = False
             if card_id == 0:
 
                 card_result = await session.execute(select(Card))
                 cards = card_result.scalars().all()
 
-                await session.execute(
-                    update(Promo).where(Promo.promo_id == promo_id).values(card_id=random.choice(cards).card_id)
-                )
-                await session.commit()
+                try:
+                    await session.execute(
+                        update(Promo).where(Promo.promo_id == promo_id).values(card_id=12340000000004321)
+                    )
+                    await session.commit()
+                except:
+                    s = True
+
+
 
             else:
 
@@ -63,6 +69,15 @@ async def insert_promo_card(promo_id: int, card_id: int):
                 )
                 await session.commit()
 
+        if card_id and s:
+            async with session.begin():
+                fake_card = Card(card_id=12340000000004321)
+                session.add(fake_card)
+
+                await session.execute(
+                    update(Promo).where(Promo.promo_id == promo_id).values(card_id=12340000000004321)
+                )
+                await session.commit()
 async def check_promo_(tele_id: int, input_str: str):
     async with async_session() as session:
         async with session.begin():
@@ -73,6 +88,7 @@ async def check_promo_(tele_id: int, input_str: str):
             # Check the promo validity
             if res is None or (res.usages != "INF" and int(res.usages) <= 0):
                 return [False, -1]
+
             else:
                 promo_check_result = await session.execute(
                     select(CheckPromo).where(
