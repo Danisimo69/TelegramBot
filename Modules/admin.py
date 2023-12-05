@@ -132,6 +132,7 @@ async def select_all_promos():
     async with async_session() as session:
         result = await session.execute(select(Promo))
         promos = result.scalars().all()
+        print(promos)
         card_list = []
         for promo in promos:
             if promo.card_id != 0:

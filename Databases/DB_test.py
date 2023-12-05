@@ -1,5 +1,7 @@
 import sys
 
+from sqlalchemy import select
+
 sys.path.append('/root/Offside-bot/TelegramBot')
 from main_config import admins
 
@@ -43,9 +45,19 @@ async def AddPacks():
 
         await session.commit()
 
+async def PromoClean():
+
+    async with async_session() as session:
+        spams = await session.execute(select(Promo))
+        spams = spams.scalars().all()
+
+        for i in spams:
+            await session.delete(i)
+
+        await session.commit()
 
 if __name__ == '__main__':
-    asyncio.run(AddAdmin())
+    asyncio.run(PromoClean())
 
 
 
