@@ -1,7 +1,6 @@
 import asyncio
 
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Boolean, DateTime, Text, NullPool, \
-    BigInteger, text
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Boolean, DateTime, Text, NullPool, BigInteger
 from sqlalchemy.ext.asyncio import AsyncAttrs, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import sessionmaker, relationship, DeclarativeBase
 from sqlalchemy.ext.declarative import declarative_base
@@ -48,8 +47,8 @@ class CardsOfUser(Base):
     card_key = Column(BigInteger, primary_key=True)
     is_new = Column(Boolean)
 
-    tele_id = Column(BigInteger)
-    card_id = Column(BigInteger)
+    tele_id = Column(BigInteger, ForeignKey('users.tele_id'))
+    card_id = Column(BigInteger, ForeignKey('cards.card_id'))
 
 
 class CheckPromo(Base):
@@ -102,7 +101,7 @@ class Promo(Base):
     __tablename__ = 'promos'
     promo_id = Column(BigInteger, primary_key=True)
     promo = Column(Text)
-    card_id = Column(BigInteger)
+    card_id = Column(BigInteger, ForeignKey('cards.card_id'))
     usages = Column(Text, default="INF")
 
 class Spam(Base):
@@ -134,10 +133,6 @@ async def async_main():
 async def async_drop():
 
     async with engine.begin() as conn:
-        await conn.execute(text("DROP TABLE IF EXISTS cards_of_user;"))
-        await conn.execute(text("DROP TABLE IF EXISTS users CASCADE;"))
-        await conn.commit()
-
         await conn.run_sync(Base.metadata.drop_all)
 
 if __name__ == '__main__':
