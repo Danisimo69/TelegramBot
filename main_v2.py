@@ -421,12 +421,12 @@ async def rare_mode_my_collection(callback: types.CallbackQuery, state: FSMConte
 
         elif card.rareness == 6 and card.rareness not in used:
             used.append(card.rareness)
-            buttons.append({"text": "Мифические",
+            buttons.append({"text": "Эксклюзивные",
                             "callback_data": "rare_by_0:6" if trade_status == "None" else "chan_rare_by_0:6"})
 
         elif card.rareness == 7 and card.rareness not in used:
             used.append(card.rareness)
-            buttons.append({"text": "Эксклюзивные",
+            buttons.append({"text": "Мифические",
                             "callback_data": "rare_by_0:7" if trade_status == "None" else "chan_rare_by_0:7"})
 
     await callback.message.edit_text("Выберите редкость карт", reply_markup=InlineButtons.rare_mode_kb(buttons))
