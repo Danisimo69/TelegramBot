@@ -1,6 +1,6 @@
 import random
 
-from sqlalchemy import select, update, delete
+from sqlalchemy import select, update, delete, and_
 
 from Databases.DB import *
 
@@ -99,13 +99,13 @@ async def check_promo_(tele_id: int, input_str: str):
             else:
                 promo_check_result = await session.execute(
                     select(CheckPromo).where(
-                        CheckPromo.promo == input_str,
-                        CheckPromo.tele_id == tele_id
+                        and_(CheckPromo.promo == input_str,
+                        CheckPromo.tele_id == tele_id)
                     )
                 )
                 promo_check = promo_check_result.scalar_one_or_none()
 
-                if promo_check is not None:
+                if promo_check != None:
                     return [False, -1]
 
                 # Insert into check_promo if the promo is valid and not used by this tele_id
@@ -123,6 +123,8 @@ async def minus_promo_usages(input_str: str):
             if res and res.usages != "INF":
                 new_usages = int(res.usages) - 1
                 if new_usages <= 0:
+
+                    await session.execute(delete(CheckPromo).where(CheckPromo.promo == input_str))
                     await session.delete(res)
                 else:
                     res.usages = str(new_usages)

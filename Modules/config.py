@@ -421,7 +421,7 @@ async def get_active_transaction(tele_id: int):
     async with async_session() as session:
         result = await session.execute(select(Operation).where(and_(Operation.user_id == tele_id, Operation.finished == False)))
         operation = result.scalar_one_or_none()
-        return operation.operation_id if operation else None
+        return operation if operation else None
 
 async def save_transaction(tele_id: int):
     async with async_session() as session:

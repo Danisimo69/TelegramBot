@@ -1,4 +1,6 @@
 import logging
+import uuid
+
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters.command import Command
 from aiogram.fsm.context import FSMContext
@@ -1056,15 +1058,15 @@ async def get_buy_message(callback: types.CallbackQuery, state: FSMContext):
 
     else:
         await clear_user_transaction(callback.from_user.id)
-        operation_id = await get_operation_id(callback.from_user.id, int(callback.data))
+        operation_id = str(uuid.uuid4())
         redirect_uri = await quick_pay("buy cards", await get_price(int(callback.data)), operation_id)
 
         if int(callback.data) != 4:
             await place_operation_in_db(
-                callback.from_user.id, operation_id, "Покупка случайных карточек")
+                callback.from_user.id, operation_id, callback.data)
         else:
             await place_operation_in_db(
-                callback.from_user.id, operation_id, "Покупка дополнительных ударов")
+                callback.from_user.id, operation_id, callback.data)
 
         await callback.message.edit_text("Ваш заказ сформирован\nОплатите его по кнопке ниже",
                                          reply_markup=InlineButtons.get_buy_message_kb(redirect_uri))
@@ -1104,14 +1106,15 @@ async def check_pay(callback: types.CallbackQuery, state: FSMContext):
     elif callback.data != "0":
 
         print(callback.data)
-        operation_id = await get_active_transaction(callback.from_user.id)
+        operation = await get_active_transaction(callback.from_user.id)
+        operation_id = operation.operation_id
         if await check_payment(operation_id):
 
             await callback.message.delete()
 
             # добавлена одна строчка кода ниже
             await save_transaction(callback.from_user.id)
-            product_id = operation_id.split("|")[1]
+            product_id = int(operation.operation_name)
             if int(product_id) == 1:
                 card_num = 1
             if int(product_id) == 2:
