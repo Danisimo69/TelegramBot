@@ -62,8 +62,9 @@ async def check_delta(tele_id: int):
             delta = datetime.datetime.now() - game.last_kick
             minute = datetime.timedelta(minutes=1)
             turn1, turn2 = str(game.turn1), str(game.turn2)
+            print(delta >= minute, turn1, turn2)
             if delta >= minute and turn1 == turn2 == "0":
-                return [True, 0]
+                return [True, game.user1_id if game.turn == game.user1_id else game.user2_id]
             if delta >= minute and turn1 == "0":
                 return [True, game.user1_id]
             if delta >= minute and turn2 == "0":
@@ -328,13 +329,15 @@ async def destroy_game(tele_id: int):
 
                 else:
 
-                    await session.execute(update(User).where(and_(User.penalty_rating >= 25, User.tele_id == delta[1])).values(penalty_rating=User.penalty_rating - 25))
+                    await session.execute(update(User).where(User.tele_id == delta[1]).values(penalty_rating=User.penalty_rating - 25))
 
                     game_result = await session.execute(select(Penalty).where(or_(Penalty.user1_id == tele_id, Penalty.user2_id == tele_id)))
                     game = game_result.scalar_one_or_none()
 
-                    ans = game.user1_id
+
                     if game.user1_id != delta[1]:
+                        ans = game.user1_id
+
                         await session.execute(
                             update(User).where(User.tele_id == game.user1_id).values(
                                 penalty_rating=User.penalty_rating + 25))
