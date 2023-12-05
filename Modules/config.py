@@ -114,9 +114,11 @@ async def calc_card_rating(tele_id: int):
             num = 0
             for card_user in cards_of_user:
                 card_result = await session.execute(select(Card).where(Card.card_id == card_user.card_id))
-                card = card_result.scalar_one()
-                rating += card.points
-                num += 1
+                card = card_result.scalar_one_or_none()
+
+                if card:
+                    rating += card.points
+                    num += 1
             await session.execute(update(User).where(User.tele_id == tele_id).values(card_rating=rating, card_num=num))
             await session.commit()
 
