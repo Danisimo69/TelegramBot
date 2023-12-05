@@ -49,16 +49,20 @@ async def insert_promo_card(promo_id: int, card_id: int):
             s = False
             if card_id == 0:
 
-                card_result = await session.execute(select(Card))
-                cards = card_result.scalars().all()
+                card_result = await session.execute(select(Card).where(Card.card_id == 12340000000004321))
+                card = card_result.scalar_one_or_none()
 
-                try:
-                    await session.execute(
-                        update(Promo).where(Promo.promo_id == promo_id).values(card_id=12340000000004321)
-                    )
-                    await session.commit()
-                except:
+                if card:
                     s = True
+
+                else:
+                    try:
+                        await session.execute(
+                            update(Promo).where(Promo.promo_id == promo_id).values(card_id=12340000000004321)
+                        )
+                        await session.commit()
+                    except:
+                        s = True
 
 
 
@@ -69,7 +73,7 @@ async def insert_promo_card(promo_id: int, card_id: int):
                 )
                 await session.commit()
 
-        if card_id and s:
+        if card_id == 0 and s:
             async with session.begin():
                 fake_card = Card(card_id=12340000000004321)
                 session.add(fake_card)
