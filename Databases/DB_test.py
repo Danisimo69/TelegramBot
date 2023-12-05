@@ -3,21 +3,20 @@ import sys
 from sqlalchemy import select
 
 sys.path.append('/root/Offside-bot/TelegramBot')
-from main_config import admins
 
 from Databases.DB import *
 
 
-async def AddAdmin():
-
-    async with async_session() as session:
-
-        for i in admins:
-            admin = Admin(tele_id=i)
-
-            session.add(admin)
-
-        await session.commit()
+# async def AddAdmin():
+#
+#     async with async_session() as session:
+#
+#         for i in admins:
+#             admin = Admin(tele_id=i)
+#
+#             session.add(admin)
+#
+#         await session.commit()
 
 async def AddPacks():
 
