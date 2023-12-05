@@ -47,10 +47,16 @@ async def AddPacks():
 async def PromoClean():
 
     async with async_session() as session:
-        spams = await session.execute(select(Promo))
-        spams = spams.scalars().all()
+        promos = await session.execute(select(Promo))
+        promos = promos.scalars().all()
 
-        for i in spams:
+        for i in promos:
+            await session.delete(i)
+
+        promos = await session.execute(select(CheckPromo))
+        promos = promos.scalars().all()
+
+        for i in promos:
             await session.delete(i)
 
         await session.commit()
