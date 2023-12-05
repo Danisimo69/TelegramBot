@@ -53,7 +53,10 @@ async def insert_promo_card(promo_id: int, card_id: int):
                 card = card_result.scalar_one_or_none()
 
                 if card:
-                    s = True
+                    await session.execute(
+                        update(Promo).where(Promo.promo_id == promo_id).values(card_id=12340000000004321)
+                    )
+                    await session.commit()
 
                 else:
                     try:
