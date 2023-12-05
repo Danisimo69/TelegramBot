@@ -62,7 +62,7 @@ async def check_delta(tele_id: int):
             delta = datetime.datetime.now() - game.last_kick
             minute = datetime.timedelta(minutes=1)
             turn1, turn2 = str(game.turn1), str(game.turn2)
-            print(delta >= minute, turn1, turn2)
+            # print(delta >= minute, turn1, turn2)
             if delta >= minute and turn1 == turn2 == "0":
                 return [True, game.user1_id if game.turn == game.user1_id else game.user2_id]
             if delta >= minute and turn1 == "0":
