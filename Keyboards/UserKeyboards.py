@@ -232,11 +232,19 @@ class InlineButtons(InlineConstructor):
 
 
         if "not_chan" in tasks:
-            schema.append(5)
+            schema.append(1)
+
+            btns.append(
+                {"text": add_data["num1_text"],
+                 "callback_data": add_data["num1_data"]}
+            )
+
+            schema.append(4)
             btns.append({"text": "<<",
                          "callback_data": add_data['<<<']})
             btns.append({"text": "<",
                          "callback_data": add_data['<<']})
+
             btns.append(
                 {"text": ">",
                  "callback_data": add_data['>>']}
@@ -268,11 +276,13 @@ class InlineButtons(InlineConstructor):
 
         if "num0" in tasks:
 
-            schema.append(3)
+            schema.append(1)
             btns.append(
                 {"text": add_data["num1_text"],
                  "callback_data": add_data["num1_data"]}
             )
+
+            schema.append(2)
             btns.append(
                 {"text": ">",
                  "callback_data": add_data['>>']}
@@ -294,15 +304,18 @@ class InlineButtons(InlineConstructor):
                          "callback_data": "my_collection"})
 
         if "num_len-1" in tasks:
-            schema.append(3)
-            btns.append({"text": "<<",
-                         "callback_data": add_data['<<<']})
-            btns.append({"text": "<",
-                         "callback_data": add_data['<<']})
+            schema.append(1)
             btns.append(
                 {"text": add_data["num1_text"],
                  "callback_data": add_data["num1_data"]}
             )
+
+            schema.append(2)
+            btns.append({"text": "<<",
+                         "callback_data": add_data['<<<']})
+            btns.append({"text": "<",
+                         "callback_data": add_data['<<']})
+
 
         if "num_len-1_chan" in tasks:
             schema.append(1)
@@ -316,15 +329,17 @@ class InlineButtons(InlineConstructor):
                          "callback_data": "my_collection"})
 
         if "num_else" in tasks:
-            schema.append(5)
-            btns.append({"text": "<<",
-                         "callback_data": add_data['<<<']})
-            btns.append({"text": "<",
-                         "callback_data": add_data['<<']})
+            schema.append(1)
             btns.append(
                 {"text": add_data["num1_text"],
                  "callback_data": add_data["num1_data"]}
             )
+
+            schema.append(4)
+            btns.append({"text": "<<",
+                         "callback_data": add_data['<<<']})
+            btns.append({"text": "<",
+                         "callback_data": add_data['<<']})
             btns.append(
                 {"text": ">",
                  "callback_data": add_data['>>']}
@@ -381,11 +396,13 @@ class InlineButtons(InlineConstructor):
                          "callback_data": "my_collection"})
 
         if "num0" in tasks:
-            schema.append(3)
+            schema.append(1)
             btns.append(
                 {"text": add_data["num1_text"],
                  "callback_data": add_data["num1_data"]}
             )
+
+            schema.append(2)
             btns.append(
                 {"text": ">",
                  "callback_data": add_data['>>']}
@@ -407,15 +424,18 @@ class InlineButtons(InlineConstructor):
                          "callback_data": "my_collection"})
 
         if "num_len-1" in tasks:
-            schema.append(3)
-            btns.append({"text": "<<",
-                         "callback_data": add_data['<<<']})
-            btns.append({"text": "<",
-                         "callback_data": add_data['<<']})
+            schema.append(1)
             btns.append(
                 {"text": add_data["num1_text"],
                  "callback_data": add_data["num1_data"]}
             )
+
+            schema.append(2)
+            btns.append({"text": "<<",
+                         "callback_data": add_data['<<<']})
+            btns.append({"text": "<",
+                         "callback_data": add_data['<<']})
+
 
         if "num_len-1_chan" in tasks:
             schema.append(1)
@@ -429,15 +449,18 @@ class InlineButtons(InlineConstructor):
                          "callback_data": "my_collection"})
 
         if "num_else" in tasks:
-            schema.append(5)
-            btns.append({"text": "<<",
-                         "callback_data": add_data['<<<']})
-            btns.append({"text": "<",
-                         "callback_data": add_data['<<']})
+            schema.append(1)
             btns.append(
                 {"text": add_data["num1_text"],
                  "callback_data": add_data["num1_data"]}
             )
+
+            schema.append(4)
+            btns.append({"text": "<<",
+                         "callback_data": add_data['<<<']})
+            btns.append({"text": "<",
+                         "callback_data": add_data['<<']})
+
             btns.append(
                 {"text": ">",
                  "callback_data": add_data['>>']}
@@ -604,7 +627,7 @@ class InlineButtons(InlineConstructor):
 
             if add_data['format'] == "first":
 
-                schema = [3,1]
+                schema = [1,2,1]
                 btns = [
                     {"text": "({}/{})".format(add_data['card_number'],add_data['cards']),
                      "callback_data": "slide_bought_cards:nothing"},
@@ -618,14 +641,16 @@ class InlineButtons(InlineConstructor):
 
             elif add_data['format'] == "...":
 
-                schema = [5,1]
+                schema = [1,4,1]
                 btns = [
+                    {"text": "({}/{})".format(add_data['card_number'], add_data['cards']),
+                     "callback_data": "slide_bought_cards:nothing"},
+
                     {"text": "<<",
                      "callback_data": "slide_bought_cards:first"},
                     {"text": "<",
                      "callback_data": "slide_bought_cards:previous"},
-                    {"text": "({}/{})".format(add_data['card_number'],add_data['cards']),
-                     "callback_data": "slide_bought_cards:nothing"},
+
                     {"text": ">",
                      "callback_data": "slide_bought_cards:next"},
                     {"text": ">>",
@@ -635,14 +660,16 @@ class InlineButtons(InlineConstructor):
                 ]
 
             else:
-                schema = [3, 1]
+                schema = [1,2, 1]
                 btns = [
+                    {"text": "({}/{})".format(add_data['card_number'], add_data['cards']),
+                     "callback_data": "slide_bought_cards:nothing"},
+
                     {"text": "<<",
                      "callback_data": "slide_bought_cards:first"},
                     {"text": "<",
                      "callback_data": "slide_bought_cards:previous"},
-                    {"text": "({}/{})".format(add_data['card_number'], add_data['cards']),
-                     "callback_data": "slide_bought_cards:nothing"},
+
                     {"text": "🧑💻 В личный кабинет",
                      "callback_data": "back"}
                 ]
