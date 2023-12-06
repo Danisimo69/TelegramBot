@@ -23,20 +23,20 @@ async def select_all_cards(sort_mode: str | None):
     async with async_session() as session:
 
         if sort_mode == "Down":
-            result = await session.execute(select(Card))
+            result = await session.execute(select(Card).where(Card.card_id != 12340000000004321))
 
             cards = result.scalars().all()
             cards = sorted(cards, key=lambda card: card.points, reverse=True)
             return cards
 
         elif sort_mode == "Up":
-            result = await session.execute(select(Card))
+            result = await session.execute(select(Card).where(Card.card_id != 12340000000004321))
             cards = result.scalars().all()
             cards = sorted(cards, key=lambda card: card.points, reverse=False)
             return cards
 
         else:
-            result = await session.execute(select(Card))
+            result = await session.execute(select(Card).where(Card.card_id != 12340000000004321))
             cards = result.scalars().all()
 
             return cards
