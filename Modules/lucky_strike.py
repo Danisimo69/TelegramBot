@@ -67,7 +67,7 @@ async def give_free_strikes():
         async with session.begin():
             users = await session.execute(select(LuckyStrike))
             now = datetime.datetime.now()
-            for user in users.scalars():
+            for user in users.scalars().all():
                 if (now - user.free_strike).days >= 1:
                     user.free_strikes = 2
             await session.commit()
