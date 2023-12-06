@@ -574,7 +574,8 @@ async def cancel_trade(tele_id: int):
             else:
                 offer_result = await session.execute(select(Offer).where(Offer.tele_id2 == tele_id))
                 offer = offer_result.scalar_one_or_none()
-                return [0, 0]
+                if offer:
+                    return [0, offer.tele_id1]
 
 
 
