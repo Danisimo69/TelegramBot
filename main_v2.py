@@ -1529,7 +1529,11 @@ async def show_all_cards(callback: types.CallbackQuery, state: FSMContext):
                 if "sort_rate" in callback.data:
                     await state.update_data(sorting="Down")
 
-    num = int(callback.data.split(":")[0].split("_")[2])
+    try:
+        num = int(callback.data.split(":")[0].split("_")[2])
+    except:
+        num = int(callback.data.split(":")[0].split("_")[1])
+
     card_list = await select_all_cards(sort_mode=sorting if local_sort == 22 else local_sort)
 
     if "choose_" in callback.data:
