@@ -137,7 +137,7 @@ async def select_all_promos():
         print(promos)
         card_list = []
         for promo in promos:
-            if promo.card_id != 0:
+            if promo.card_id != 12340000000004321:
                 card_result = await session.execute(select(Card).where(Card.card_id == promo.card_id))
                 card = card_result.scalar_one()
                 card_list.append(card)
