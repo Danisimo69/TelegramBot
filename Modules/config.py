@@ -156,6 +156,8 @@ async def get_user_by_username(username: str):
 
             if users_result:
                 return users_result.tele_id
+            else:
+                return None
 
 async def clear_non_active_users():
     async with async_session() as session:

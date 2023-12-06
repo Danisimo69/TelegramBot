@@ -1665,10 +1665,15 @@ async def check_promocode(message: types.Message, state: FSMContext):
 
         user_id = await get_user_by_username(username)
 
-        if user_id == -1:
+        if user_id == None:
             await bot.send_message(message.from_user.id,
                                    "Этому пользователю нельзя предложить обмен, попробуйте снова",
                                    reply_markup=InlineButtons.get_second_user_for_offer_kb())
+        elif await user_had_offer(user_id):
+            await bot.send_message(message.from_user.id,
+                                   "Этому пользователю нельзя предложить обмен, так как он учавствует в другом, попробуйте позже",
+                                   reply_markup=InlineButtons.get_second_user_for_offer_kb())
+
         else:
             print(int(message.from_user.id), int(user_id))
 
@@ -1728,8 +1733,8 @@ async def check_promocode(message: types.Message, state: FSMContext):
 
     if state_ == UserState.get_username_for_admin.state:
 
-        user_id = await get_user_by_username(message.text)
-        if user_id == -1:
+        user_id = await get_user_by_username(message.text.replace("@", ""))
+        if user_id == None:
             await bot.send_message(message.from_user.id, "Пользователь с таким именем не был найден. "
                                                          "Проверьте корректность ввода данных",
                                    reply_markup=AdminInlineKeyboard.users_processing_kb())

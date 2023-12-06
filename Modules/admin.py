@@ -176,7 +176,8 @@ async def get_user_info(tele_id: int, user_name: str):
                        f"Забирал бесплатную карточку - {user.free_card}\n" \
                        f"Количество транзакций - {user.transactions}"
             return user_str
-        return "Пользователь не найден"
+        else:
+            return "Пользователь не найден"
 
 
 async def get_user_transactions_info(tele_id: int, user_name: str):

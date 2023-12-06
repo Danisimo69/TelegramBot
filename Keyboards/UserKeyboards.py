@@ -74,12 +74,12 @@ class InlineButtons(InlineConstructor):
         return InlineButtons._create_kb(btns, schema)
 
     @staticmethod
-    def trade_kb() -> aiogram.types.InlineKeyboardMarkup:
+    def trade_kb(offer_id: int) -> aiogram.types.InlineKeyboardMarkup:
         schema = [1, 1]
         btns = [{"text": "🃏 Выбрать карту для обмена",
                  "callback_data": "my_collection:chan"},
                 {"text": "❌ Отклонить обмен",
-                 "callback_data": "trade_canc"}
+                 "callback_data": f"trade_canc:{offer_id}"}
                 ]
         return InlineButtons._create_kb(btns, schema)
 
