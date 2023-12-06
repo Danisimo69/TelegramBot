@@ -1018,8 +1018,12 @@ async def call_trade(callback: types.CallbackQuery):
             await callback.message.delete()
             msg = await bot.send_message(callback.from_user.id,
                                          "❌ Вы отменили обмен!", reply_markup=InlineButtons.call_trade_kb())
-            msg = await bot.send_message(trade_id[1], "❌ Обмен был отклонён",
-                                         reply_markup=InlineButtons.call_trade_kb())
+
+            try:
+                msg = await bot.send_message(trade_id[1], "❌ Обмен был отклонён",
+                                             reply_markup=InlineButtons.call_trade_kb())
+            except:
+                traceback.print_exc()
 
             return
         if trade_id[0] != callback.from_user.id:

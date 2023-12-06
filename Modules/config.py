@@ -576,6 +576,8 @@ async def cancel_trade(tele_id: int):
                 offer = offer_result.scalar_one_or_none()
                 if offer:
                     return [0, offer.tele_id1]
+                else:
+                    return [0,0]
 
 
 
