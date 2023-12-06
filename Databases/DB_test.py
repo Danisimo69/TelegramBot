@@ -1,6 +1,6 @@
 import sys
 
-from sqlalchemy import select
+from sqlalchemy import select, or_
 
 sys.path.append('/root/Offside-bot/TelegramBot')
 
@@ -61,8 +61,19 @@ async def PromoClean():
 
         await session.commit()
 
+async def OfferClean():
+    async with async_session() as session:
+        offers = await session.execute(select(Offer).where(or_(Offer.tele_id1 == 942706258, Offer.tele_id2 == 942706258)))
+        offers = offers.scalars().all()
+
+        for i in offers:
+            await session.delete(i)
+
+        await session.commit()
+
+
 if __name__ == '__main__':
-    asyncio.run(PromoClean())
+    asyncio.run(OfferClean())
 
 
 

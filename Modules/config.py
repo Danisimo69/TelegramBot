@@ -599,11 +599,13 @@ async def do_trade(tele_id: int):
 
                 await session.delete(offer)
                 await session.commit()
+                return [offer.tele_id1, offer.tele_id2]
 
-        if offer:
-            return [offer.tele_id1, offer.tele_id2]
+            else:
+                return [0, 0]
 
-        return [0, 0]
+
+
 
 async def get_users_id_for_free_card():
     async with async_session() as session:
