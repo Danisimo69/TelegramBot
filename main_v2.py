@@ -1,3 +1,4 @@
+import datetime
 import logging
 import uuid
 
@@ -1901,6 +1902,10 @@ async def search_user_by_username(user_name, tele_id):
 async def time_events_checker():
     while True:
         print("Проверка")
+        await unban_users()
+
+        await bot.send_message(649811235, f"Обновление спама - {datetime.datetime.now()}")
+
         games_list = await select_all_games()
         if games_list:
             # print(games_list)
@@ -1942,7 +1947,7 @@ async def time_events_checker():
                     await set_get_msg(user_id, 1)
                 except Exception as e:
                     print(e)
-        await unban_users()
+
         await give_free_strikes()
         await asyncio.sleep(30)
 
