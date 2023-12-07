@@ -57,8 +57,6 @@ async def start_message(message: types.Message, state: FSMContext):
     subs_status = await is_subscribed(message.from_user.id)
     spam_status = await check_spam(message.from_user.id)
 
-    await bot.send_message(649811235, f"{message.from_user.id}, {subs_status}, {spam_status}")
-
     if not subs_status:
 
         await message.answer("Чтобы начать играть, необходимо:\n"
@@ -1642,8 +1640,6 @@ async def add_card_to_promo(callback: types.CallbackQuery):
 async def check_promocode(message: types.Message, state: FSMContext):
     # print("NOT START")
 
-    await bot.send_message(649811235, f"{message.from_user.id}, Не старт")
-
 
     state_ = await state.get_state()
 
@@ -1902,11 +1898,10 @@ async def search_user_by_username(user_name, tele_id):
 async def time_events_checker():
     while True:
         print("Проверка")
-        await unban_users()
 
-        await bot.send_message(649811235, f"Обновление спама - {datetime.datetime.now()}")
 
         games_list = await select_all_games()
+        await bot.send_message(649811235, f"Обновление Игр - {datetime.datetime.now()}")
         if games_list:
             # print(games_list)
             for game in games_list:
@@ -1950,12 +1945,18 @@ async def time_events_checker():
 
         await give_free_strikes()
         await asyncio.sleep(30)
+async def spam_cleaner():
 
+    while True:
+        await unban_users()
+        await bot.send_message(649811235, f"Обновление спама - {datetime.datetime.now()}")
+        await asyncio.sleep(120)
 
 async def main():
     await bot.delete_webhook(drop_pending_updates=True)
 
     asyncio.create_task(time_events_checker())
+    asyncio.create_task(spam_cleaner())
 
     await dp.start_polling(bot)
 
