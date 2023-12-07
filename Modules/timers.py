@@ -42,7 +42,7 @@ async def unban_users():
             need_delta = datetime.timedelta(seconds=30)
 
             for spammer in spammers_list:
-                if now_time - spammer.last_msg > need_delta:
+                if now_time - spammer.last_msg > need_delta or '-' in str(now_time - spammer.last_msg):
                     await session.delete(spammer)
 
             await session.commit()
