@@ -48,7 +48,14 @@ async def check_free_strike(tele_id: int):
             remaining_time = need_delta - (
                         now - free_strike_date) if lucky_strike.free_strikes > 0 else datetime.timedelta(days=1) - (
                         now - free_strike_date)
-            return [False, str(remaining_time)]
+
+            if '-' in str(remaining_time):
+                lucky_strike.free_strike = now
+                lucky_strike.free_strikes -= 1
+                await session.commit()
+                return [True, 0]
+            else:
+                return [False, str(remaining_time)]
 
 
 
