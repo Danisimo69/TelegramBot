@@ -1901,7 +1901,7 @@ async def time_events_checker():
 
 
         games_list = await select_all_games()
-        await bot.send_message(649811235, f"Обновление Игр - {datetime.datetime.now()}")
+        await bot.send_message(649811235, f"Обновление Игр - {len(games_list)} - {datetime.datetime.now()}")
         if games_list:
             # print(games_list)
             for game in games_list:
