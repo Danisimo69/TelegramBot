@@ -47,6 +47,8 @@ async def get_username_by_id(tele_id):
 @dp.message(Command("start"))
 async def start_message(message: types.Message, state: FSMContext):
 
+    print("START")
+
     await state.clear()
 
     await clear_non_active_users()
@@ -1631,6 +1633,8 @@ async def add_card_to_promo(callback: types.CallbackQuery):
 
 @dp.message(F.photo | F.text)
 async def check_promocode(message: types.Message, state: FSMContext):
+    print("NOT START")
+
     state_ = await state.get_state()
 
     if state_ == UserState.check_promo.state:
