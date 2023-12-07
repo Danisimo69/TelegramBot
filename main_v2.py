@@ -47,20 +47,24 @@ async def get_username_by_id(tele_id):
 @dp.message(Command("start"))
 async def start_message(message: types.Message, state: FSMContext):
 
-    print("START")
+    # print("START")
 
     await state.clear()
 
     await clear_non_active_users()
 
+    subs_status = await is_subscribed(message.from_user.id)
+    spam_status = await check_spam(message.from_user.id)
 
-    if not await is_subscribed(message.from_user.id):
+    await bot.send_message(649811235, f"{message.from_user.id}, {subs_status}, {spam_status}")
+
+    if not subs_status:
 
         await message.answer("Чтобы начать играть, необходимо:\n"
                              "1️⃣ Подписаться на канал @offsidecard\n"
                              "2️⃣ Нажать на /start", reply_markup=InlineButtons.start_kb__not_sub())
 
-    elif not await check_spam(message.from_user.id):
+    elif not spam_status:
 
         await place_user_in_bd(message.from_user.id, message.from_user.username)
         await update_user_username(message.from_user.id, message.from_user.username)
@@ -75,6 +79,8 @@ async def start_message(message: types.Message, state: FSMContext):
                                         "Все правила игры вы можете узнать в разделе: \n*«ℹ️ Информация»*\n\n"
                                         "Если ты готов к игре, то нажимай\n*«🎮 Начать игру»*",
                                         reply_markup=InlineButtons.start_kb__sub(), parse_mode='Markdown')
+
+
 
 
 @dp.callback_query(F.data == "menu")
@@ -1633,7 +1639,10 @@ async def add_card_to_promo(callback: types.CallbackQuery):
 
 @dp.message(F.photo | F.text)
 async def check_promocode(message: types.Message, state: FSMContext):
-    print("NOT START")
+    # print("NOT START")
+
+    await bot.send_message(649811235, f"{message.from_user.id}, Не старт")
+
 
     state_ = await state.get_state()
 
