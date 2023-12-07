@@ -46,6 +46,9 @@ async def get_username_by_id(tele_id):
 
 @dp.message(Command("start"))
 async def start_message(message: types.Message, state: FSMContext):
+
+    await state.clear()
+
     await clear_non_active_users()
 
 
