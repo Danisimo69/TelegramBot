@@ -447,7 +447,7 @@ async def get_last_cards(tele_id: int):
 
             for c in cards_of_user:
 
-                print(c.card_id, c.tele_id)
+                print([c.card_id, c.tele_id])
 
                 card_result = await session.execute(select(Card).where(Card.card_id == c.card_id))
                 card = card_result.scalar_one()
