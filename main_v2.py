@@ -1946,12 +1946,13 @@ async def time_events_checker():
                 except Exception as e:
                     print(e)
 
-        await give_free_strikes()
+
         await asyncio.sleep(30)
 async def spam_cleaner():
 
     while True:
         await unban_users()
+        await give_free_strikes()
         await bot.send_message(649811235, f"Обновление спама - {datetime.datetime.now()}")
         await asyncio.sleep(120)
 
