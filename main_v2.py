@@ -1598,8 +1598,13 @@ async def show_all_cards(callback: types.CallbackQuery, state: FSMContext):
                                           reply_markup=AdminInlineKeyboard.show_all_cards_kb(tasks, buttons))
     else:
         tasks.append("num_else")
-        await callback.message.edit_media(media=InputMediaPhoto(media=card_list[num].photo_id),
+        try:
+            await callback.message.edit_media(media=InputMediaPhoto(media=card_list[num].photo_id),
                                           reply_markup=AdminInlineKeyboard.show_all_cards_kb(tasks, buttons))
+        except:
+            await callback.message.delete()
+            await callback.message.answer_photo(media=InputMediaPhoto(media=card_list[num].photo_id),
+                                              reply_markup=AdminInlineKeyboard.show_all_cards_kb(tasks, buttons))
 
 
 # новый хендлер для удаления карточек
@@ -1638,8 +1643,6 @@ async def add_card_to_promo(callback: types.CallbackQuery):
 
 @dp.message(F.photo | F.text)
 async def check_promocode(message: types.Message, state: FSMContext):
-    # print("NOT START")
-
 
     state_ = await state.get_state()
 
@@ -1648,7 +1651,7 @@ async def check_promocode(message: types.Message, state: FSMContext):
         res = await check_promo_(message.from_user.id, message.text)
 
         if res[0]:
-            # тело этого if было изменено
+
             if res[1] == 12340000000004321:
                 await add_cards_to_user(await get_random_card(1, "random_card"), message.from_user.id)
             else:
