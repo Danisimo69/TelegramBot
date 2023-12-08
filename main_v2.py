@@ -1621,6 +1621,8 @@ async def delete_card(callback: types.CallbackQuery):
 @dp.callback_query(F.data[:6] == "promo_")
 async def add_card_to_promo(callback: types.CallbackQuery):
     promo_id = callback.data.split("_")[1]
+    print(callback.data.split("_"))
+
     if callback.data.split("_")[2] == "del":
         await delete_promo(int(promo_id))
 
@@ -1631,6 +1633,7 @@ async def add_card_to_promo(callback: types.CallbackQuery):
     if callback.data.split("_")[2] == "rng":
         await insert_promo_card(int(promo_id), 0)
     else:
+
         info = callback.data.split("_")
         card_id = info[2]
         await insert_promo_card(int(promo_id), int(card_id))
