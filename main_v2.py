@@ -1481,7 +1481,7 @@ async def show_all_cards(callback: types.CallbackQuery, state: FSMContext):
                 tasks.append("sort_button")
                 buttons["sort_button"] = {"text": "️Рейтинг ⬇️",
                                           "callback_data": "{}:sort_rate".format(
-                                              "redact_62_0" if "redact_" in callback.data else "destroy_62_0" if "destroy_" in callback.data else "choose_0")}
+                                              "redact_62_0" if "redact_" in callback.data else "destroy_62_0" if "destroy_" in callback.data else f"choose_{data['promo_id']}")}
 
                 if "sort_rate" in callback.data:
                     await state.update_data(sorting="Up")
@@ -1493,7 +1493,7 @@ async def show_all_cards(callback: types.CallbackQuery, state: FSMContext):
                 buttons["sort_button"] = {"text": "️Рейтинг ⬆️",
 
                                           "callback_data": "{}:sort_rate".format(
-                                              "redact_62_0" if "redact_" in callback.data else "destroy_62_0" if "destroy_" in callback.data else "choose_0")}
+                                              "redact_62_0" if "redact_" in callback.data else "destroy_62_0" if "destroy_" in callback.data else f"choose_{data['promo_id']}")}
 
                 if "sort_rate" in callback.data:
                     await state.update_data(sorting="Up")
@@ -1504,7 +1504,7 @@ async def show_all_cards(callback: types.CallbackQuery, state: FSMContext):
                 tasks.append("sort_button")
                 buttons["sort_button"] = {"text": "️Рейтинг ⬆️",
                                           "callback_data": "{}:sort_rate".format(
-                                              "redact_62_0" if "redact_" in callback.data else "destroy_62_0" if "destroy_" in callback.data else "choose_0")}
+                                              "redact_62_0" if "redact_" in callback.data else "destroy_62_0" if "destroy_" in callback.data else f"choose_{data['promo_id']}")}
 
                 if "sort_rate" in callback.data:
                     await state.update_data(sorting=None)
@@ -1514,7 +1514,7 @@ async def show_all_cards(callback: types.CallbackQuery, state: FSMContext):
                 buttons["sort_button"] = {"text": "️Рейтинг ❌",
 
                                           "callback_data": "{}:sort_rate".format(
-                                              "redact_62_0" if "redact_" in callback.data else "destroy_62_0" if "destroy_" in callback.data else "choose_0")}
+                                              "redact_62_0" if "redact_" in callback.data else "destroy_62_0" if "destroy_" in callback.data else f"choose_{data['promo_id']}")}
 
                 if "sort_rate" in callback.data:
                     await state.update_data(sorting=None)
@@ -1525,7 +1525,7 @@ async def show_all_cards(callback: types.CallbackQuery, state: FSMContext):
                 tasks.append("sort_button")
                 buttons["sort_button"] = {"text": "️Рейтинг ❌",
                                           "callback_data": "{}:sort_rate".format(
-                                              "redact_62_0" if "redact_" in callback.data else "destroy_62_0" if "destroy_" in callback.data else "choose_0")}
+                                              "redact_62_0" if "redact_" in callback.data else "destroy_62_0" if "destroy_" in callback.data else f"choose_{data['promo_id']}")}
 
                 if "sort_rate" in callback.data:
                     await state.update_data(sorting="Down")
@@ -1534,7 +1534,7 @@ async def show_all_cards(callback: types.CallbackQuery, state: FSMContext):
                 tasks.append("sort_button")
                 buttons["sort_button"] = {"text": "️Рейтинг ⬇️",
                                           "callback_data": "{}:sort_rate".format(
-                                              "redact_62_0" if "redact_" in callback.data else "destroy_62_0" if "destroy_" in callback.data else "choose_0")}
+                                              "redact_62_0" if "redact_" in callback.data else "destroy_62_0" if "destroy_" in callback.data else f"choose_{data['promo_id']}")}
 
                 if "sort_rate" in callback.data:
                     await state.update_data(sorting="Down")
@@ -1677,7 +1677,8 @@ async def check_promocode(message: types.Message, state: FSMContext):
             usages = "INF"
 
         promo_id = await place_promo(promo, usages)
-        print(promo_id)
+
+        await state.update_data(promo_id=promo_id)
 
         await message.delete()
         await bot.send_message(message.from_user.id, "Теперь нажмите кнопку выбрать карточку, "
