@@ -1426,7 +1426,7 @@ async def admin_execute(callback: types.CallbackQuery, state: FSMContext):
         # print(promos)
         if promos != None:
             for i in range(0, len(promos[0])):
-                promos_for_kb.append({"text": str(promos[0][i].promo) + " - " + str(promos[1][i].card_id),
+                promos_for_kb.append({"text": str(promos[0][i].promo) + " - " + str(promos[1][i].card_id if promos[1][i].card_id != None else "Рандом"),
                                       "callback_data": "promo_" + str(promos[0][i].promo_id) + "_del"})
             # изменена строчка кода ниже (убран таб)
 
