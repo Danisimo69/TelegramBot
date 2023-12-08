@@ -142,7 +142,9 @@ async def select_all_promos():
                 card = card_result.scalar_one()
                 card_list.append(card)
             else:
-                card_list.append(None)  # or a placeholder for a random card
+                card_result = await session.execute(select(Card).where(Card.card_id == promo.card_id))
+                card = card_result.scalar_one()
+                card_list.append(card)
         return [promos, card_list]
 
 async def delete_promo(promo_id: int):
