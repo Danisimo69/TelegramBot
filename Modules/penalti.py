@@ -65,11 +65,16 @@ async def check_delta(tele_id: int):
             # print(delta >= minute, turn1, turn2)
             if delta >= minute and turn1 == turn2 == "0":
                 return [True, game.user1_id if game.turn == game.user1_id else game.user2_id]
-            if delta >= minute and turn1 == "0":
+            elif delta >= minute and turn1 == "0":
                 return [True, game.user1_id]
-            if delta >= minute and turn2 == "0":
+            elif delta >= minute and turn2 == "0":
                 return [True, game.user2_id]
-        return [False, False]
+            else:
+
+                print("Ошибка Игра")
+                return [True, game.user1_id if game.turn == game.user1_id else game.user2_id]
+        else:
+            return [False, False]
 
 async def kicker_status(tele_id: int):
     async with async_session() as session:
@@ -366,7 +371,7 @@ async def delete_game(tele_id: int):
             await session.execute(delete(Penalty).where(or_(Penalty.user1_id == tele_id, Penalty.user2_id == tele_id)))
             await session.commit()
 
-        return [game.user1_id, game.user2_id]
+            return [game.user1_id, game.user2_id]
 
 
 

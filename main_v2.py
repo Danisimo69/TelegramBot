@@ -1906,7 +1906,6 @@ async def time_events_checker():
     while True:
         print("Проверка")
 
-
         games_list = await select_all_games()
         await bot.send_message(649811235, f"Обновление Игр - {len(games_list)} - {datetime.datetime.now()}")
         if games_list:
@@ -1937,9 +1936,16 @@ async def time_events_checker():
                                                      reply_markup=InlineButtons.time_events_checker_kb(False))
 
         await asyncio.sleep(10)
-        # проверка юзеров на возможность получить карточку
-        user_list = await get_users_id_for_free_card()
 
+
+
+
+
+async def give_free_card():
+    # проверка юзеров на возможность получить карточку
+
+    while True:
+        user_list = await get_users_id_for_free_card()
         for user_id in user_list:
             if await is_subscribed(user_id):
                 try:
@@ -1949,7 +1955,7 @@ async def time_events_checker():
                     await set_get_msg(user_id, 1)
                 except Exception as e:
                     print(e)
-
+        await bot.send_message(649811235, f"Обновление бесплатных карт - {datetime.datetime.now()}")
 
         await asyncio.sleep(30)
 async def spam_cleaner():
@@ -1965,6 +1971,7 @@ async def main():
 
     asyncio.create_task(time_events_checker())
     asyncio.create_task(spam_cleaner())
+    asyncio.create_task(give_free_card())
 
     await dp.start_polling(bot)
 
