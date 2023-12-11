@@ -1911,6 +1911,9 @@ async def time_events_checker():
         if games_list:
             # print(games_list)
             for game in games_list:
+
+                await bot.send_message(649811235, f"ИНФОРМАЦИЯ ПО МАТЧУ ({game.user1_id}, {game.user2_id}) - {datetime.datetime.now()}")
+
                 result = await destroy_game(game.user1_id)
                 if result[0] != 0:
 

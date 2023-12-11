@@ -70,20 +70,23 @@ async def check_purchased_strikes(tele_id: int):
         return [False, 0]
 
 async def give_free_strikes():
-    async with async_session() as session:
-        async with session.begin():
 
-            await session.execute(update(LuckyStrike).where(
-                datetime.datetime.now()-LuckyStrike.free_strike >= datetime.timedelta(hours=24)
-            ).values(free_strikes=2))
+    while True:
 
-            # users = await session.execute(select(LuckyStrike))
-            # now = datetime.datetime.now()
-            # for user in users.scalars().all():
-            #     if (now - user.free_strike) >= datetime.timedelta(hours=12):
-            #         user.free_strikes = 2
+        async with async_session() as session:
+            async with session.begin():
 
-            await session.commit()
+                await session.execute(update(LuckyStrike).where(
+                    datetime.datetime.now()-LuckyStrike.free_strike >= datetime.timedelta(hours=24)
+                ).values(free_strikes=2))
+
+                # users = await session.execute(select(LuckyStrike))
+                # now = datetime.datetime.now()
+                # for user in users.scalars().all():
+                #     if (now - user.free_strike) >= datetime.timedelta(hours=12):
+                #         user.free_strikes = 2
+
+                await session.commit()
 
 async def give_free_card():
     async with async_session() as session:
