@@ -49,15 +49,29 @@ def check_payment_token(payment_token):
 
 
 async def quick_pay(target, price, order_id):
-    quickpay = await asyncio.to_thread(
-    Quickpay,
-        receiver=wallet_number,
-        quickpay_form="shop",
-        targets=target,
-        paymentType="SB",
-        sum=price,
-        label=order_id
-    )
+
+    try:
+        quickpay = await asyncio.to_thread(
+        Quickpay,
+            receiver=wallet_number,
+            quickpay_form="shop",
+            targets=target,
+            paymentType="SB",
+            sum=price,
+            label=order_id
+        )
+    except:
+        await asyncio.sleep(2)
+
+        quickpay = await asyncio.to_thread(
+            Quickpay,
+            receiver=wallet_number,
+            quickpay_form="shop",
+            targets=target,
+            paymentType="SB",
+            sum=price,
+            label=order_id
+        )
 
     print(quickpay.base_url)
     print(quickpay.redirected_url)
