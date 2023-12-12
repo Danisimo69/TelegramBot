@@ -1915,6 +1915,9 @@ async def time_events_checker():
                 await bot.send_message(649811235, f"ИНФОРМАЦИЯ ПО МАТЧУ ({game.user1_id}, {game.user2_id}) - {datetime.datetime.now()}")
 
                 result = await destroy_game(game.user1_id)
+                await bot.send_message(649811235,
+                                       f"ИНФОРМАЦИЯ ПО МАТЧУ 2 ({game.user1_id}, {game.user2_id}) - {datetime.datetime.now()}")
+
                 if result[0] != 0:
 
                     if result[2]:
@@ -1958,6 +1961,7 @@ async def give_free_card():
                     await set_get_msg(user_id, 1)
                 except Exception as e:
                     print(e)
+
         await bot.send_message(649811235, f"Обновление бесплатных карт - {datetime.datetime.now()}")
 
         await asyncio.sleep(30)
@@ -1965,16 +1969,28 @@ async def spam_cleaner():
 
     while True:
         await unban_users()
-        await give_free_strikes()
         await bot.send_message(649811235, f"Обновление спама - {datetime.datetime.now()}")
         await asyncio.sleep(120)
+
+
+async def ls_updater():
+
+    while True:
+        try:
+            await unban_users()
+            await bot.send_message(649811235, f"Обновление Лаки Страйков - {datetime.datetime.now()}")
+            await asyncio.sleep(120)
+        except:
+            await bot.send_message(649811235, f"Обновление Лаки Страйков (Ошибка) - {datetime.datetime.now()}")
+
 
 async def main():
     await bot.delete_webhook(drop_pending_updates=True)
 
-    asyncio.create_task(time_events_checker())
     asyncio.create_task(spam_cleaner())
+    asyncio.create_task(ls_updater())
     asyncio.create_task(give_free_card())
+    asyncio.create_task(time_events_checker())
 
     await dp.start_polling(bot)
 

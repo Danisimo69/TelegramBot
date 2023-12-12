@@ -76,15 +76,16 @@ async def give_free_strikes():
         async with async_session() as session:
             async with session.begin():
 
-                await session.execute(update(LuckyStrike).where(
-                    datetime.datetime.now()-LuckyStrike.free_strike >= datetime.timedelta(hours=24)
-                ).values(free_strikes=2))
+                # await session.execute(update(LuckyStrike).where(
+                #     datetime.datetime.now()-LuckyStrike.free_strike >= datetime.timedelta(hours=24)
+                # ).values(free_strikes=2))
 
-                # users = await session.execute(select(LuckyStrike))
-                # now = datetime.datetime.now()
-                # for user in users.scalars().all():
-                #     if (now - user.free_strike) >= datetime.timedelta(hours=12):
-                #         user.free_strikes = 2
+                users = await session.execute(select(LuckyStrike))
+                now = datetime.datetime.now()
+                users = users.scalars().all()
+                for user in users:
+                    if (now - user.free_strike) >= datetime.timedelta(hours=12):
+                        user.free_strikes = 2
 
                 await session.commit()
 
