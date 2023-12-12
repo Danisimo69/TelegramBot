@@ -1903,6 +1903,7 @@ async def search_user_by_username(user_name, tele_id):
 
 
 async def time_events_checker():
+
     while True:
         print("Проверка")
 
@@ -1940,6 +1941,9 @@ async def time_events_checker():
                         msg = await bot.send_message(result[1],
                                                      "Матч признан несостоявшимся из-за длительного ожидания 🏳️",
                                                      reply_markup=InlineButtons.time_events_checker_kb(False))
+
+                else:
+                    continue
 
         await asyncio.sleep(10)
 

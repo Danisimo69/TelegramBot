@@ -354,9 +354,17 @@ async def destroy_game(tele_id: int):
                             update(User).where(User.tele_id == game.user2_id).values(
                                 penalty_rating=User.penalty_rating + 25))
 
+                    # await session.commit()
+
+                    # game_result = await session.execute(
+                    #     select(Penalty).where(or_(Penalty.user1_id == tele_id, Penalty.user2_id == tele_id)))
+                    # game = game_result.scalar_one_or_none()
+
+                    await session.execute(
+                        delete(Penalty).where(or_(Penalty.user1_id == tele_id, Penalty.user2_id == tele_id)))
                     await session.commit()
 
-                    await delete_game(tele_id)
+                    # await delete_game(tele_id)
                     return [ans, delta[1], True]
     else:
         return [0, 0]
