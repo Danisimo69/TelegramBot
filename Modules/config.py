@@ -164,20 +164,20 @@ async def clear_non_active_users():
         async with session.begin():
             current_date = datetime.datetime.now()
 
-            # users_result = await session.execute(select(User).where(and_(User.card_num == 0, User.penalty_rating == 0)).order_by(User.register_at))
-            # users = users_result.scalars().all()
-            # for user in users:
-            #     reg_date = user.register_at
-            #     if (current_date - reg_date).days >= 30:
-            #         await session.delete(user)
+            users_result = await session.execute(select(User).where(and_(User.card_num == 0, User.penalty_rating == 0)).order_by(User.register_at))
+            users = users_result.scalars().all()
+            for user in users:
+                reg_date = user.register_at
+                if (current_date - reg_date).days >= 30:
+                    await session.delete(user)
 
-            await session.execute(delete(User).where(
-                and_(
-                    User.card_num == 0,
-                    User.penalty_rating == 0,
-                    (current_date - User.register_at).days >= 30
-                )
-            ))
+            # await session.execute(delete(User).where(
+            #     and_(
+            #         User.card_num == 0,
+            #         User.penalty_rating == 0,
+            #         (current_date - User.register_at).days >= 30
+            #     )
+            # ))
 
             await session.commit()
 
