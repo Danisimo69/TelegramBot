@@ -164,7 +164,7 @@ async def add_card_to_user_by_card_id(card_id: int, tele_id: int):
             cards = cards.scalars().all()
             cards = [i.card_key for i in cards]
 
-            new_card_of_user = CardsOfUser(card_key= max(cards)+10000000,tele_id=tele_id, card_id=card_id, is_new=True)
+            new_card_of_user = CardsOfUser(card_key= random.randint(1000000,1000000000000),tele_id=tele_id, card_id=card_id, is_new=True)
             session.add(new_card_of_user)
             await session.commit()
 
