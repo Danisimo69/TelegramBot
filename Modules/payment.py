@@ -101,7 +101,7 @@ def test_():
     print("Next page starts with: ", history.next_record)
 
     for operation in history.operations:
-        print([operation.operation_id, operation.status, operation.amount, operation.label])
+        print([operation.operation_id, operation.amount, operation.label, operation.datetime])
 
 if __name__ == '__main__':
     # get_token("13A1B279E7E93DE71356A31E1A70EF8A667A41F1F8562FC019CB9BB61FF46E19", redirect_url="http://site.ru")
