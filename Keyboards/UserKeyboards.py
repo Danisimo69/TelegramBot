@@ -268,7 +268,7 @@ class InlineButtons(InlineConstructor):
                          "callback_data": "trade_canc"})
             schema.append(1)
             btns.append({"text": "⏪ Назад",
-                         "callback_data": "my_collection"})
+                         "callback_data": "my_collection:chan"})
 
         if "num1_not_chan" in tasks:
 
@@ -301,7 +301,7 @@ class InlineButtons(InlineConstructor):
                          "callback_data": "trade_canc"})
             schema.append(1)
             btns.append({"text": "⏪ Назад",
-                         "callback_data": "my_collection"})
+                         "callback_data": "my_collection:chan"})
 
         if "num0_not_chan" in tasks:
 
@@ -329,7 +329,7 @@ class InlineButtons(InlineConstructor):
                          "callback_data": "trade_canc"})
             schema.append(1)
             btns.append({"text": "⏪ Назад",
-                         "callback_data": "my_collection"})
+                         "callback_data": "my_collection:chan"})
 
         if "num_len-1_not_chan" in tasks:
 
@@ -364,7 +364,7 @@ class InlineButtons(InlineConstructor):
                          "callback_data": "trade_canc"})
             schema.append(1)
             btns.append({"text": "⏪ Назад",
-                         "callback_data": "my_collection"})
+                         "callback_data": "my_collection:chan"})
 
         if "num_else_not_chan" in tasks:
 
@@ -402,7 +402,7 @@ class InlineButtons(InlineConstructor):
                          "callback_data": "trade_canc"})
             schema.append(1)
             btns.append({"text": "⏪ Назад",
-                         "callback_data": "my_collection"})
+                         "callback_data": "my_collection:chan"})
 
         if "num1_not_chan" in tasks:
 
@@ -433,7 +433,7 @@ class InlineButtons(InlineConstructor):
                          "callback_data": "trade_canc"})
             schema.append(1)
             btns.append({"text": "⏪ Назад",
-                         "callback_data": "my_collection"})
+                         "callback_data": "my_collection:chan"})
 
         if "num0_not_chan" in tasks:
 
@@ -461,7 +461,7 @@ class InlineButtons(InlineConstructor):
                          "callback_data": "trade_canc"})
             schema.append(1)
             btns.append({"text": "⏪ Назад",
-                         "callback_data": "my_collection"})
+                         "callback_data": "my_collection:chan"})
 
         if "num_len-1_not_chan" in tasks:
 
@@ -497,7 +497,7 @@ class InlineButtons(InlineConstructor):
                          "callback_data": "trade_canc"})
             schema.append(1)
             btns.append({"text": "⏪ Назад",
-                         "callback_data": "my_collection"})
+                         "callback_data": "my_collection:chan"})
 
 
         if "num_else_not_chan" in tasks:
