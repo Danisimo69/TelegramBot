@@ -266,6 +266,9 @@ class InlineButtons(InlineConstructor):
             schema.append(1)
             btns.append({"text": "❌ Отклонить обмен",
                          "callback_data": "trade_canc"})
+            schema.append(1)
+            btns.append({"text": "⏪ Назад",
+                         "callback_data": "my_collection"})
 
         if "num1_not_chan" in tasks:
 
@@ -296,6 +299,9 @@ class InlineButtons(InlineConstructor):
             schema.append(1)
             btns.append({"text": "❌ Отклонить обмен",
                          "callback_data": "trade_canc"})
+            schema.append(1)
+            btns.append({"text": "⏪ Назад",
+                         "callback_data": "my_collection"})
 
         if "num0_not_chan" in tasks:
 
@@ -321,6 +327,9 @@ class InlineButtons(InlineConstructor):
             schema.append(1)
             btns.append({"text": "❌ Отклонить обмен",
                          "callback_data": "trade_canc"})
+            schema.append(1)
+            btns.append({"text": "⏪ Назад",
+                         "callback_data": "my_collection"})
 
         if "num_len-1_not_chan" in tasks:
 
@@ -353,6 +362,9 @@ class InlineButtons(InlineConstructor):
             schema.append(1)
             btns.append({"text": "❌ Отклонить обмен",
                          "callback_data": "trade_canc"})
+            schema.append(1)
+            btns.append({"text": "⏪ Назад",
+                         "callback_data": "my_collection"})
 
         if "num_else_not_chan" in tasks:
 
@@ -388,6 +400,9 @@ class InlineButtons(InlineConstructor):
             schema.append(1)
             btns.append({"text": "❌ Отклонить обмен",
                          "callback_data": "trade_canc"})
+            schema.append(1)
+            btns.append({"text": "⏪ Назад",
+                         "callback_data": "my_collection"})
 
         if "num1_not_chan" in tasks:
 
@@ -416,6 +431,9 @@ class InlineButtons(InlineConstructor):
             schema.append(1)
             btns.append({"text": "❌ Отклонить обмен",
                          "callback_data": "trade_canc"})
+            schema.append(1)
+            btns.append({"text": "⏪ Назад",
+                         "callback_data": "my_collection"})
 
         if "num0_not_chan" in tasks:
 
@@ -441,6 +459,9 @@ class InlineButtons(InlineConstructor):
             schema.append(1)
             btns.append({"text": "❌ Отклонить обмен",
                          "callback_data": "trade_canc"})
+            schema.append(1)
+            btns.append({"text": "⏪ Назад",
+                         "callback_data": "my_collection"})
 
         if "num_len-1_not_chan" in tasks:
 
@@ -474,6 +495,9 @@ class InlineButtons(InlineConstructor):
             schema.append(1)
             btns.append({"text": "❌ Отклонить обмен",
                          "callback_data": "trade_canc"})
+            schema.append(1)
+            btns.append({"text": "⏪ Назад",
+                         "callback_data": "my_collection"})
 
 
         if "num_else_not_chan" in tasks:
