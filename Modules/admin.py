@@ -160,7 +160,11 @@ async def delete_promo(promo_id: int):
 async def add_card_to_user_by_card_id(card_id: int, tele_id: int):
     async with async_session() as session:
         async with session.begin():
-            new_card_of_user = CardsOfUser(tele_id=tele_id, card_id=card_id, is_new=True)
+            cards = await session.execute(select(CardsOfUser))
+            cards = cards.scalars().all()
+            cards = [i.card_key for i in cards]
+
+            new_card_of_user = CardsOfUser(card_key= max(cards)+10000000,tele_id=tele_id, card_id=card_id, is_new=True)
             session.add(new_card_of_user)
             await session.commit()
 
