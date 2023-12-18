@@ -39,7 +39,7 @@ async def check_free_strike(tele_id: int):
                 return [True, 0]
 
             free_strike_date = lucky_strike.free_strike
-            if (now - free_strike_date).hour >= 12 and lucky_strike.free_strikes > 0:
+            if (now - free_strike_date).seconds >= 60*60*12 and lucky_strike.free_strikes > 0:
                 lucky_strike.free_strike = now
                 lucky_strike.free_strikes -= 1
                 await session.commit()
