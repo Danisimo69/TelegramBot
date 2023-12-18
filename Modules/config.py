@@ -425,8 +425,13 @@ async def edit_card_in_db(card_id: int, new_info):
 async def add_cards_to_user(card_list: list, user_id: int):
     async with async_session() as session:
         async with session.begin():
+
+            cards = await session.execute(select(CardsOfUser))
+            cards = cards.scalars().all()
+            cards = [i.card_key for i in cards]
+
             for card in card_list:
-                new_card_of_user = CardsOfUser(card_key= random.randint(1000000000,100000000000000),
+                new_card_of_user = CardsOfUser(card_key= max(cards)+1,
                                                tele_id=user_id,
                                                card_id=card.card_id,
                                                is_new=True)
