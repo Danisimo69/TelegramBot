@@ -431,11 +431,14 @@ async def add_cards_to_user(card_list: list, user_id: int):
             cards = [i.card_key for i in cards]
 
             for card in card_list:
-                new_card_of_user = CardsOfUser(card_key= max(cards)+1,
+                new_card_of_user = CardsOfUser(card_key= max(cards)+10000000,
                                                tele_id=user_id,
                                                card_id=card.card_id,
                                                is_new=True)
                 session.add(new_card_of_user)
+
+                print([max(cards)+10000000, user_id, card.card_id,True])
+
             await session.commit()
 
 async def user_in_top_ten(tele_id: int):
