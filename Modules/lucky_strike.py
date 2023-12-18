@@ -82,7 +82,7 @@ async def give_free_strikes():
                 now = datetime.datetime.now()
                 users = users.scalars().all()
                 for user in users:
-                    if (now - user.free_strike).hour >= 12:
+                    if (now - user.free_strike).seconds >= 60*60*12:
                         user.free_strikes = 1
 
                 await session.commit()
@@ -93,8 +93,8 @@ async def give_free_card():
             users = await session.execute(select(LuckyStrike))
             now = datetime.datetime.now()
             for user in users.scalars().all():
-                if (now - user.free_strike).days >= 1:
-                    user.free_strikes = 2
+                if (now - user.free_strike).seconds >= 60*60*12:
+                    user.free_strikes = 1
             await session.commit()
 
 async def update_user_strikes(tele_id: int, num: int):
