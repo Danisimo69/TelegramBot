@@ -45,7 +45,7 @@ class InlineButtons(InlineConstructor):
         if "b3" in tasks:
             schema.append(1)
             btns.append({"text": "💵 Купить 3 удара",
-                 "callback_data": "4"})
+                 "callback_data": "10"})
         if "no_b3" in tasks:
             schema.append(1)
             btns.append({"text": "⚽ Сделать удар",
@@ -693,13 +693,17 @@ class InlineButtons(InlineConstructor):
 
     @staticmethod
     def store_kb() -> aiogram.types.InlineKeyboardMarkup:
-        schema = [1, 1, 1, 1]
-        btns = [{"text": "💵 Купить одну рандомную карточку",
+        schema = [1, 1, 1, 1,1,1]
+        btns = [{"text": "💵 Купить 3 рандомных карточки",
                  "callback_data": "1"},
-                {"text": "💵 Купить три рандомных карточки",
+                {"text": "💵 Купить 5 рандомных карточек",
                  "callback_data": "2"},
-                {"text": "💵 Купить пять рандомных карточек",
+                {"text": "💵 Купить 10 рандомных карточек",
                  "callback_data": "3"},
+                {"text": "💵 Купить 50 рандомных карточек",
+                 "callback_data": "4"},
+                {"text": "💵 Купить Легендарный набор",
+                 "callback_data": "5"},
                 {"text": "⏪ Назад",
                  "callback_data": "back"},
                 ]
@@ -731,6 +735,8 @@ class InlineButtons(InlineConstructor):
                      "callback_data": "chan_by_0"},
                     {"text": "🀄 По редкости",
                      "callback_data": "rare_mode:chan"},
+                    {"text": "❌ Отменить активные обмены",
+                     "callback_data": "all_trades_cancel"},
                     {"text": "⏪ Назад",
                      "callback_data": "back"},
                     ]

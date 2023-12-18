@@ -12,7 +12,7 @@ class Has_One_Chan_Filter(BaseFilter):
 class Get_Buy_Message_Filter(BaseFilter):
     async def __call__(self, callback: CallbackQuery) -> bool:
         try:
-            return True if callback.data.isdigit() and int(callback.data) < 7 else False
+            return True if callback.data.isdigit() and int(callback.data) < 20 else False
         except:
             return False
 

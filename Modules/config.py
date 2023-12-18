@@ -325,6 +325,30 @@ async def get_operation_id(tele_id: int, product_id: int):
             return id_str
         return None
 
+async def delete_user_trades(tele_id: int):
+    async with async_session() as session:
+        async with session.begin():
+
+            nickname = await session.execute(select(User).where(User.tele_id==tele_id))
+            nickname = nickname.scalar_one()
+
+            offers = await session.execute(select(Offer).where(or_(Offer.tele_id1 == tele_id, Offer.tele_id2 == tele_id)))
+            offers = offers.scalars().all()
+
+            users = []
+            for offer in offers:
+                if offer.tele_id1 == tele_id and offer.tele_id2 != None:
+                    users.append(offer.tele_id2)
+                elif offer.tele_id2 == tele_id and offer.tele_id1 != None:
+                    users.append(offer.tele_id1)
+
+                await session.delete(offer)
+
+            await session.commit()
+            return users, nickname.username
+
+
+
 
 async def get_price(prod_id: int):
     async with async_session() as session:
@@ -340,8 +364,13 @@ async def is_admin(tele_id: int):
 async def place_player_in_db(player_info):
     async with async_session() as session:
         async with session.begin():
+
+            all_card_ids = await session.execute(select(Card))
+            all_card_ids = all_card_ids.scalars().all()
+            all_card_ids = [i.card_id for i in all_card_ids]
+
             new_card = Card(
-                card_id = random.randint(1000000000,1000000000000),
+                card_id = int(max(all_card_ids))+1,
                 player_name=player_info[0],
                 player_nickname=player_info[1],
                 team=player_info[2],

@@ -30,7 +30,7 @@ async def check_free_strike(tele_id: int):
             lucky_strike = lucky_strike_result.scalar_one_or_none()
 
             now = datetime.datetime.now()
-            need_delta = datetime.timedelta(hours=4)
+            need_delta = datetime.timedelta(hours=12)
 
             if lucky_strike == None:
                 new_strike = LuckyStrike(tele_id=tele_id, free_strike=now)
@@ -39,15 +39,13 @@ async def check_free_strike(tele_id: int):
                 return [True, 0]
 
             free_strike_date = lucky_strike.free_strike
-            if now - free_strike_date >= need_delta and lucky_strike.free_strikes > 0:
+            if (now - free_strike_date).hour >= 12 and lucky_strike.free_strikes > 0:
                 lucky_strike.free_strike = now
                 lucky_strike.free_strikes -= 1
                 await session.commit()
                 return [True, 0]
 
-            remaining_time = need_delta - (
-                        now - free_strike_date) if lucky_strike.free_strikes > 0 else datetime.timedelta(days=1) - (
-                        now - free_strike_date)
+            remaining_time = need_delta - (now - free_strike_date)
 
             if '-' in str(remaining_time):
                 lucky_strike.free_strike = now
@@ -84,8 +82,8 @@ async def give_free_strikes():
                 now = datetime.datetime.now()
                 users = users.scalars().all()
                 for user in users:
-                    if (now - user.free_strike) >= datetime.timedelta(hours=12):
-                        user.free_strikes = 2
+                    if (now - user.free_strike).hour >= 12:
+                        user.free_strikes = 1
 
                 await session.commit()
 
@@ -116,6 +114,8 @@ async def get_random_card(card_num: int, type: str):
                 rareness = generate_item_rarity("random_card")
             elif type == "lucky_strike":
                 rareness = generate_item_rarity("lucky_strike")
+            elif type == "legendary":
+                rareness = "Легендарная"
 
             rareness = get_rareness_by_str(rareness)
 

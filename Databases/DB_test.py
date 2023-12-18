@@ -24,20 +24,30 @@ async def AddPacks():
 
         mod = Pack(buy_id=1,
                    cost=5,
-                   name="Одна карточка")
+                   name="3 рандомных карточки")
         session.add(mod)
 
         mod = Pack(buy_id=2,
                    cost=10,
-                   name="Три карточки")
+                   name="5 рандомных карточек")
         session.add(mod)
 
         mod = Pack(buy_id=3,
                    cost=15,
-                   name="Пять карточкек")
+                   name="10 рандомных карточек")
         session.add(mod)
 
         mod = Pack(buy_id=4,
+                   cost=20,
+                   name="50 рандомных карточек")
+        session.add(mod)
+
+        mod = Pack(buy_id=5,
+                   cost=10,
+                   name="Легендарный набор")
+        session.add(mod)
+
+        mod = Pack(buy_id=10,
                    cost=10,
                    name="Удары")
         session.add(mod)

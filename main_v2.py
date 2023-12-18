@@ -303,7 +303,7 @@ async def do_strike(callback: types.CallbackQuery):
 
             if not purchased[0] or purchased[1] == 1:
                 msg_text = "☘️ Ты испытал удачу и сейчас тебе не повезло😔\n" \
-                           "Попробуй еще раз через 4 часа или получи 3 удара за 100 рублей!"
+                           "Попробуй еще раз позже или получи 3 удара за 100 рублей!"
                 tasks.append("b3")
             else:
                 msg_text = f"☘️ Ты испытал удачу и сейчас тебе не повезло😔\n" \
@@ -359,9 +359,13 @@ async def get_cards(callback: types.CallbackQuery):
 @dp.callback_query(F.data == "store")
 async def get_card_shop(callback: types.CallbackQuery):
     await callback.message.edit_text(text="🛍 Ты находишься в магазине карт, у нас есть несколько товаров:\n\n"
-                                          "💰 Одна рандомная карточка - 70 рублей\n"
-                                          "💰 Три рандомных карточки - 190 рублей\n"
-                                          "💰 Пять рандомных карточек - 275 рублей",
+                                          "💰3 рандомных карточки - 190 руб\n"
+                                          "💰5 рандомных карточек - 275 руб\n"
+                                          "💰10 рандомных карточек - 500 руб\n"
+                                          "💰50 рандомных карточек - 2500 руб\n"
+                                          "💰Легендарный набор - 990 руб\n\n"
+                                          "🏆 Легендарный набор содержит:\n"
+                                          "1 рандомную Легендарную карту + 9 рандомных карт\n",
                                      reply_markup=InlineButtons.store_kb())
 
 
@@ -389,6 +393,19 @@ async def my_collection(callback: types.CallbackQuery, state: FSMContext):
         await callback.message.answer(
             "🎭 Выберите формат отображения коллекции" if dat != "chan" else "🧳 Выберите формат отображения коллекции",
             reply_markup=InlineButtons.collection_kb(False if dat != "chan" else True))
+
+@dp.callback_query(F.data == "all_trades_cancel")
+async def all_trades_cancel(callback: types.CallbackQuery, state: FSMContext):
+
+    users, nickname = await delete_user_trades(callback.from_user.id)
+
+    await callback.message.edit_text("Вы успешно завершили все активные обмены", reply_markup=InlineButtons.back_back_kb())
+
+    for user in users:
+        try:
+            await bot.send_message(chat_id=user, text="Пользователь <i>{}</i> отменил обмен с вами".format(f"@{nickname}" if nickname != None else "без юзернейма"), parse_mode="HTML")
+        except:
+            pass
 
 
 @dp.callback_query(F.data[:9] == "rare_mode")
@@ -1075,12 +1092,8 @@ async def get_buy_message(callback: types.CallbackQuery, state: FSMContext):
         operation_id = str(uuid.uuid4())
         redirect_uri = await quick_pay("buy cards", await get_price(int(callback.data)), operation_id)
 
-        if int(callback.data) != 4:
-            await place_operation_in_db(
-                callback.from_user.id, operation_id, callback.data)
-        else:
-            await place_operation_in_db(
-                callback.from_user.id, operation_id, callback.data)
+        await place_operation_in_db(
+            callback.from_user.id, operation_id, callback.data)
 
         await callback.message.edit_text("Ваш заказ сформирован\nОплатите его по кнопке ниже",
                                          reply_markup=InlineButtons.get_buy_message_kb(redirect_uri))
@@ -1130,12 +1143,16 @@ async def check_pay(callback: types.CallbackQuery, state: FSMContext):
             await save_transaction(callback.from_user.id)
             product_id = int(operation.operation_name)
             if int(product_id) == 1:
-                card_num = 1
-            if int(product_id) == 2:
                 card_num = 3
-            if int(product_id) == 3:
+            if int(product_id) == 2:
                 card_num = 5
+            if int(product_id) == 3:
+                card_num = 10
             if int(product_id) == 4:
+                card_num = 50
+            if int(product_id) == 5:
+                card_num = 9
+            if int(product_id) == 10:
                 await update_user_strikes(callback.from_user.id, 1)
 
                 await callback.message.answer("Успешно ✅, купленные удары уже начисленны вам,"
@@ -1143,6 +1160,9 @@ async def check_pay(callback: types.CallbackQuery, state: FSMContext):
                 return
 
             await add_cards_to_user((await get_random_card(card_num, "random_card")), callback.from_user.id)
+            if int(product_id) == 5:
+                await add_cards_to_user((await get_random_card(1, "legendary")), callback.from_user.id)
+
 
             await plus_user_transactions(callback.from_user.id)
 
