@@ -1935,7 +1935,11 @@ async def time_events_checker():
 
                 await bot.send_message(649811235, f"ИНФОРМАЦИЯ ПО МАТЧУ ({game.user1_id}, {game.user2_id}) - {datetime.datetime.now()}")
 
-                result = await destroy_game(game.user1_id)
+                try:
+                    result = await destroy_game(game.user1_id)
+                except:
+                    continue
+
                 await bot.send_message(649811235,
                                        f"ИНФОРМАЦИЯ ПО МАТЧУ 2 ({game.user1_id}, {game.user2_id}) - {datetime.datetime.now()}")
 

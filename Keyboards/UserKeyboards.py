@@ -730,7 +730,7 @@ class InlineButtons(InlineConstructor):
 
 
         if trade_mode:
-            schema = [1,1,1]
+            schema = [1,1,1,1]
             btns = [{"text": "🃏 Все карты",
                      "callback_data": "chan_by_0"},
                     {"text": "🀄 По редкости",
