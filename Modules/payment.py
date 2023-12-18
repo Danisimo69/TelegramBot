@@ -86,12 +86,24 @@ async def check_payment(payment_label):
     history = await asyncio.to_thread(client.operation_history,
                                       label=payment_label)
     print(len(history.operations))
+
+
     if len(history.operations) > 0:
         return True
     else:
         return False
 
+def test_():
+    client = Client(yoomoney_token)
+    history = client.operation_history(label="330d0621-d6fe-4024-8dac-5007a2ab217a")
+
+    print("List of operations:")
+    print("Next page starts with: ", history.next_record)
+
+    for operation in history.operations:
+        print([operation.operation_id, operation.status, operation.amount, operation.label])
+
 if __name__ == '__main__':
     # get_token("13A1B279E7E93DE71356A31E1A70EF8A667A41F1F8562FC019CB9BB61FF46E19", redirect_url="http://site.ru")
     # check_payment_token(yoomoney_token)
-    ...
+    test_()
