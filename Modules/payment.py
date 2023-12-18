@@ -95,7 +95,7 @@ async def check_payment(payment_label):
 
 def test_():
     client = Client(yoomoney_token)
-    history = client.operation_history(label="330d0621-d6fe-4024-8dac-5007a2ab217a")
+    history = client.operation_history(label="74c6b43f-8c0a-4366-a594-ba75ecc3cae9")
 
     print("List of operations:")
     print("Next page starts with: ", history.next_record)
