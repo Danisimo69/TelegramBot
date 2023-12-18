@@ -1160,6 +1160,7 @@ async def check_pay(callback: types.CallbackQuery, state: FSMContext):
                 return
 
             await add_cards_to_user((await get_random_card(card_num, "random_card")), callback.from_user.id)
+
             if int(product_id) == 5:
                 await add_cards_to_user((await get_random_card(1, "legendary")), callback.from_user.id)
 
@@ -1964,7 +1965,7 @@ async def time_events_checker():
                 else:
                     continue
 
-        await asyncio.sleep(10)
+        await asyncio.sleep(300)
 
 
 
