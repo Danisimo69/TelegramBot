@@ -1140,7 +1140,7 @@ async def check_pay(callback: types.CallbackQuery, state: FSMContext):
             await callback.message.delete()
 
             # добавлена одна строчка кода ниже
-            await save_transaction(callback.from_user.id)
+            await save_transaction(operation_id)
             product_id = int(operation.operation_name)
             if int(product_id) == 1:
                 card_num = 3

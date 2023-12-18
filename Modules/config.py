@@ -472,10 +472,10 @@ async def get_active_transaction(tele_id: int):
         operation = result.scalar_one_or_none()
         return operation if operation else None
 
-async def save_transaction(tele_id: int):
+async def save_transaction(operation_id: int):
     async with async_session() as session:
         async with session.begin():
-            await session.execute(update(Operation).where(Operation.user_id == tele_id).values(finished=True))
+            await session.execute(update(Operation).where(Operation.operation_id == operation_id).values(finished=True))
             await session.commit()
 
 async def get_last_cards(tele_id: int):
