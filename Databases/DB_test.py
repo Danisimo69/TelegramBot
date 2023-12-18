@@ -83,7 +83,7 @@ async def OfferClean():
 
 
 if __name__ == '__main__':
-    asyncio.run(OfferClean())
+    asyncio.run(AddPacks())
 
 
 
