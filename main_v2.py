@@ -94,7 +94,7 @@ async def back_to_menu(callback: types.CallbackQuery, state: FSMContext):
 
     if not subs_status:
 
-        await callback.message.answer("Чтобы начать играть, необходимо:\n"
+        await callback.message.edit_text("Чтобы начать играть, необходимо:\n"
                              "1️⃣ Подписаться на канал @offsidecard\n"
                              "2️⃣ Нажать на /start", reply_markup=InlineButtons.start_kb__not_sub())
 
@@ -103,7 +103,7 @@ async def back_to_menu(callback: types.CallbackQuery, state: FSMContext):
         await place_user_in_bd(callback.from_user.id, callback.from_user.username)
         await update_user_username(callback.from_user.id, callback.from_user.username)
 
-        sent_msg = await callback.message.answer("👋 <b>Добро пожаловать в OFFSide</b>\n\n"
+        sent_msg = await callback.message.edit_text("👋 <b>Добро пожаловать в OFFSide</b>\n\n"
                                         "⚽️ Здесь ты сможешь собирать карточки своих любимых футболистов "
                                         "из медиафутбола и играть в мини-игры.\n\n"
                                         "🏆 У нас есть таблицы рейтинга среди коллекционеров карточек и игроков "
