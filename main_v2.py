@@ -170,24 +170,36 @@ async def return_to_lk(callback: types.CallbackQuery, state: FSMContext):
     await state.clear()
 
     await bot.answer_callback_query(callback.id)
+    await clear_non_active_users()
 
-    await calc_card_rating(callback.from_user.id)
-    await cancel_trade(callback.from_user.id)
+    subs_status = await is_subscribed(callback.from_user.id)
+    spam_status = await check_spam(callback.from_user.id)
 
-    user = await search_user_in_db(callback.from_user.id)
+    if not subs_status:
 
-    stat_str = "Твои достижения:\n\n🃏 Собранное количество карточек: " + str(user.card_num) + "\n" \
-                                                                                              "🏆 Рейтинг собранных карточек: " + str(
-        user.card_rating) + "\n\n" \
-                            "⚽️ Рейтинг в игре Пенальти: " + str(user.penalty_rating)
+        await callback.message.edit_text("Чтобы начать играть, необходимо:\n"
+                                         "1️⃣ Подписаться на канал @offsidecard\n"
+                                         "2️⃣ Нажать на /start", reply_markup=InlineButtons.start_kb__not_sub())
 
-    try:
-        await callback.message.edit_text(stat_str,
-                                         reply_markup=InlineButtons.back_lk_kb(await is_admin(callback.from_user.id)))
-    except:
-        await callback.message.delete()
-        await callback.message.answer(stat_str,
-                                      reply_markup=InlineButtons.back_lk_kb(await is_admin(callback.from_user.id)))
+    elif not spam_status:
+
+        await calc_card_rating(callback.from_user.id)
+        await cancel_trade(callback.from_user.id)
+
+        user = await search_user_in_db(callback.from_user.id)
+
+        stat_str = "Твои достижения:\n\n🃏 Собранное количество карточек: " + str(user.card_num) + "\n" \
+                                                                                                  "🏆 Рейтинг собранных карточек: " + str(
+            user.card_rating) + "\n\n" \
+                                "⚽️ Рейтинг в игре Пенальти: " + str(user.penalty_rating)
+
+        try:
+            await callback.message.edit_text(stat_str,
+                                             reply_markup=InlineButtons.back_lk_kb(await is_admin(callback.from_user.id)))
+        except:
+            await callback.message.delete()
+            await callback.message.answer(stat_str,
+                                          reply_markup=InlineButtons.back_lk_kb(await is_admin(callback.from_user.id)))
 
 
 @dp.callback_query(F.data == "rate")
