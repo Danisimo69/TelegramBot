@@ -87,10 +87,7 @@ async def start_message(message: types.Message, state: FSMContext):
 async def back_to_menu(callback: types.CallbackQuery, state: FSMContext):
     await state.clear()
 
-    await clear_non_active_users()
-
     subs_status = await is_subscribed(callback.from_user.id)
-    spam_status = await check_spam(callback.from_user.id)
 
     if not subs_status:
 
@@ -98,7 +95,7 @@ async def back_to_menu(callback: types.CallbackQuery, state: FSMContext):
                              "1️⃣ Подписаться на канал @offsidecard\n"
                              "2️⃣ Нажать на /start", reply_markup=InlineButtons.start_kb__not_sub())
 
-    elif not spam_status:
+    else:
 
         await place_user_in_bd(callback.from_user.id, callback.from_user.username)
         await update_user_username(callback.from_user.id, callback.from_user.username)
